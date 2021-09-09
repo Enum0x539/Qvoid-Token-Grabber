@@ -9,3 +9,7 @@
  If u have any interesting ideas you are more than welcome to contact me on my Instagram: "yenon.aharon".
  
  This project was created for educational purposes only, so please do not use it to harm and damage!
+ 
+ ## LEGAL DISCLAIMER
+
+The author does not hold any responsibility for the bad use of this tool, remember that attacking targets without prior consent is illegal and punished by law.
