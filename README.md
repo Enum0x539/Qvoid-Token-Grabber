@@ -2,7 +2,7 @@
  Advanced grabber that grabs browser passwords, cookies, and Discord tokens with the computer information.
 ### 🐵 Features
    - [x] Discord webhooks integration. 
-   - [x] Grabs all the tokens from all installed clients even if the main path changed.
+   - [x] Grabs tokens from all installed clients even if the main path changed and deletes accounts duplicates.
    - [x] 15 hardcoded known tokens locations.
    - [x] Grabs PC information + token information (IP, CPU, GPU, WINKEY).
    - [x] Sends screenshot of all screens at the moment of the grabbing.
