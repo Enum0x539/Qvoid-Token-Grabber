@@ -35,3 +35,7 @@ To be fully protected against token grabbers (except this one), you are more tha
 ### 🚨 LEGAL DISCLAIMER
 
 The author does not hold any responsibility for the bad use of this tool, remember that attacking targets without prior consent is illegal and punished by law.
+
+### ✅ Results
+ ![alt text](https://cdn.discordapp.com/attachments/825091638782459912/886697902393683968/Capture.png)
+
