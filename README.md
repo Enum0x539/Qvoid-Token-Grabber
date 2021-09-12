@@ -1,15 +1,37 @@
-# Qvoid-Token-Grabber
+# 🔥 Qvoid-Token-Grabber
+ Advanced grabber that grabs browser passwords, cookies, and Discord tokens with the computer information.
+### 🐵 Features
+   - [x] Discord webhooks integration. 
+   - [x] Grabs all the tokens from all installed clients even if the main path changed.
+   - [x] 15 hardcoded known tokens locations.
+   - [x] Grabs PC information + token information (IP, CPU, GPU, WINKEY).
+   - [x] Sends screenshot of all screens at the moment of the grabbing.
+   - [x] Grabs browser cookies and passwords.
+   - [x] Supports Brave, Chrome, Edge, Firefox, and OperaGx.
+   - [x] Self-updating, When a new account is logged or password changed will be sent again with the new information.
+   - [x] Bypasses (User-mode unless the grabber running as administrator) Anti-Token-Grabbers.<br><br>
+   - [ ]  Local cache 
+   - [ ]  15 hardcoded paths :(
+   - [ ]  Does not support Firefox, and all of the Firefox-based browsers.
  
- Grabs Discord tokens, browser cookies and passwords. 
+### 📣 Some notes
+ This project was created for educational purposes only, so please do not use it to harm and damage;
+ This project was started because I wanted to learn about Discord's infrastructure and possible exploits, mean-while I made the base of this token-grabber (like a year ago) but, not long ago I continued this project and this is the final result, of course, I will update it and add more features in the future but mean-while remember to use your power for the good 😲.
  
- I'm happy to share it with the world because I have had it for too long (made it like a year ago) and I have no use of it.
- I made it as a project to learn how Discord's authorization works and where there are possible exploits.
- This program is probably will be illegal to use without the rights permissions in most countries.
+### ⛔ What can I do against token grabbers?
+To be fully protected against token grabbers (except this one), you are more than welcome to install my Anti-Token-Grabber which is located on my GitHub.
  
- If u have any interesting ideas you are more than welcome to contact me on my Instagram: "yenon.aharon".
+### 🤓 This project is under Berkeley Software Distribution (BSD) license.
+* The source code doesn’t need to be public when a distribution of the software is made.
+* Modifications to the software can be released under any license.
+* Changes made to the source code may not be documented.
+* It offers no explicit position on patent usage.
+* The license and copyright notice must be included in the documentation of the compiled version of the source code (as opposed to only in the source code).
+* The BSD 3-clause states that the names of the author and contributors can’t be used to promote products derived from the software without permission.
+
+### 🎓 Educational Purposes
+"Copyright Disclaimer Under Section 107 of the Copyright Act 1976, allowance is made for "fair use" for purposes such as criticism, comment, news reporting, teaching scholarship, and research. Fair use is a use permitted by copyright statutes that might otherwise be infringing. Non-profit, educational, or personal use tips the balance in favor of fair use."
  
- This project was created for educational purposes only, so please do not use it to harm and damage!
- 
- ## LEGAL DISCLAIMER
+### 🚨 LEGAL DISCLAIMER
 
 The author does not hold any responsibility for the bad use of this tool, remember that attacking targets without prior consent is illegal and punished by law.
