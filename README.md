@@ -10,8 +10,8 @@
    - [x] Supports Brave, Chrome, Edge, Firefox, and OperaGx.
    - [x] Self-updating, When a new account is logged or password changed will be sent again with the new information.
    - [x] Bypasses (User-mode unless the grabber running as administrator) Anti-Token-Grabbers.<br><br>
-   - [ ]  Local cache 
-   - [ ]  15 hardcoded paths :(
+   - [ ]  Local cache .
+   - [ ]  15 hardcoded paths 😕.
    - [ ]  Does not support Firefox, and all of the Firefox-based browsers.
  
 ### 📣 Some notes
