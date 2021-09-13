@@ -13,7 +13,6 @@ using System.Windows.Forms;
 using System.Reflection;
 using LastDudeOnTheTrack.Properties;
 using System.Drawing.Imaging;
-using System.Text;
 using System.Security.Principal;
 
 namespace Qvoid_Token_Grabber.Discord
