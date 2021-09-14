@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Globalization;
 
 namespace Qvoid_Token_Grabber
 {
