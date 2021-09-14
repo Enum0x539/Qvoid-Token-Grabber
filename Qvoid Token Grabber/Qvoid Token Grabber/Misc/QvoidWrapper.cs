@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
@@ -17,69 +17,6 @@ namespace Qvoid
 {
     public static class QvoidWrapper
     {
-        public class Encryption
-        {
-            private static byte[] StringToByteArray(string hex)
-            {
-                return (from x in Enumerable.Range(0, hex.Length)
-                        where x % 2 == 0
-                        select Convert.ToByte(hex.Substring(x, 2), 16)).ToArray<byte>();
-            }
-
-            public static string StrXOR(string input, byte key, bool encrypt)
-            {
-                string output = string.Empty;
-                if (encrypt)
-                {
-                    foreach (char c in input)
-                        output += (c ^ key).ToString("X2");
-                }
-                else
-                {
-                    try
-                    {
-                        byte[] strBytes = StringToByteArray(input);
-                        foreach (byte b in strBytes)
-                            output += (char)(b ^ key);
-                    }
-                    catch
-                    {
-                        return string.Empty;
-                    }
-                }
-
-                return output;
-            }
-
-            public static string StrXOR(string input, string key, bool encrypt)
-            {
-                if (key.Length == 0)
-                    return string.Empty;
-
-                string output = string.Empty;
-                if (encrypt)
-                {
-                    for (int i = 0; i < input.Length; ++i)
-                        output += (input[i] ^ key[i % key.Length]).ToString("X2");
-                }
-                else
-                {
-                    try
-                    {
-                        byte[] strBytes = StringToByteArray(input);
-                        for (int i = 0; i < strBytes.Length; ++i)
-                            output += (char)(strBytes[i] ^ key[i % key.Length]);
-                    }
-                    catch
-                    {
-                        return string.Empty;
-                    }
-                }
-
-                return output;
-            }
-        }
-
         public static class ProcessHandler
         {
             [StructLayout(LayoutKind.Sequential)]
@@ -231,6 +168,69 @@ namespace Qvoid
 
             public const int MOVEFILE_DELAY_UNTIL_REBOOT = 0x4;
 
+        }
+
+        public class Encryption
+        {
+            private static byte[] StringToByteArray(string hex)
+            {
+                return (from x in Enumerable.Range(0, hex.Length)
+                        where x % 2 == 0
+                        select Convert.ToByte(hex.Substring(x, 2), 16)).ToArray<byte>();
+            }
+
+            public static string StrXOR(string input, byte key, bool encrypt)
+            {
+                string output = string.Empty;
+                if (encrypt)
+                {
+                    foreach (char c in input)
+                        output += (c ^ key).ToString("X2");
+                }
+                else
+                {
+                    try
+                    {
+                        byte[] strBytes = StringToByteArray(input);
+                        foreach (byte b in strBytes)
+                            output += (char)(b ^ key);
+                    }
+                    catch
+                    {
+                        return string.Empty;
+                    }
+                }
+
+                return output;
+            }
+
+            public static string StrXOR(string input, string key, bool encrypt)
+            {
+                if (key.Length == 0)
+                    return string.Empty;
+
+                string output = string.Empty;
+                if (encrypt)
+                {
+                    for (int i = 0; i < input.Length; ++i)
+                        output += (input[i] ^ key[i % key.Length]).ToString("X2");
+                }
+                else
+                {
+                    try
+                    {
+                        byte[] strBytes = StringToByteArray(input);
+                        for (int i = 0; i < strBytes.Length; ++i)
+                            output += (char)(strBytes[i] ^ key[i % key.Length]);
+                    }
+                    catch
+                    {
+                        return string.Empty;
+                    }
+                }
+
+                return output;
+            }
         }
 
         public class Discord
