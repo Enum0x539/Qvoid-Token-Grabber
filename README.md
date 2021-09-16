@@ -13,6 +13,7 @@
    - [x] Supports grabbing from FireFox based browsers (Pale Moon, WaterFox, FireFox [I will add more in the future]) <br><br>
    - [ ]  Local cache.
    - [ ]  18 hardcoded paths 😕 (Quz I prefer dynamic).
+   - [ ]  Works slow on old CPUs (lots of calculations)
  
 ### 📣 Some notes
  This project was created for educational purposes only, so please do not use it to harm and damage;
