@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
@@ -9,9 +8,10 @@ using System.Linq;
 using System.Management;
 using System.Net;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Text.RegularExpressions;
+using System.Text;
 using System.Threading;
+using System;
 
 namespace Qvoid
 {
