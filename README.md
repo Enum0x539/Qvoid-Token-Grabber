@@ -3,15 +3,16 @@
 ### 🐵 Features
    - [x] Discord webhooks integration. 
    - [x] Grabs tokens from all installed clients even if the main path changed and deletes accounts duplicates.
-   - [x] 15 hardcoded known tokens locations.
+   - [x] 18 hardcoded known tokens locations.
    - [x] Grabs PC information + token information (IP, CPU, GPU, WINKEY).
    - [x] Sends screenshot of all screens at the moment of the grabbing.
    - [x] Grabs browser cookies and passwords.
    - [x] Supports Brave, Chrome, Edge, Firefox, and OperaGx. [Password & Cookies stealer]
    - [x] Self-updating, When a new account is logged or password changed will be sent again with the new information.
    - [x] Bypasses (User-mode unless the grabber running as administrator) Anti-Token-Grabbers.<br><br>
-   - [ ]  Local cache .
-   - [ ]  15 hardcoded paths 😕 (Quz I prefer dynamic).
+   - [x] Supports grabbing from FireFox based browsers (Pale Moon, WaterFox, FireFox [I will add more in the future]) 
+   - [ ]  Local cache.
+   - [ ]  18 hardcoded paths 😕 (Quz I prefer dynamic).
  
 ### 📣 Some notes
  This project was created for educational purposes only, so please do not use it to harm and damage;
