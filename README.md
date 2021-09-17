@@ -38,6 +38,6 @@ To be protected against token grabbers, you are more than welcome to install my 
 
 The author does not hold any responsibility for the bad use of this tool, remember that attacking targets without prior consent is illegal and punished by law.
 
-### ✅ Results
+### ✅ Results (I don't have saved password 🥸)
  ![alt text](https://media.discordapp.net/attachments/825091638782459912/888508945558302750/Untitled-1.png?width=348&height=676)
 
