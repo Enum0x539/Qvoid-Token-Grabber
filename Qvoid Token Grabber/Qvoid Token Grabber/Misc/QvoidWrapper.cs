@@ -1,17 +1,17 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Management;
 using System.Net;
 using System.Runtime.InteropServices;
-using System.Text.RegularExpressions;
+using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
-using System;
 
 namespace Qvoid
 {
@@ -172,64 +172,17 @@ namespace Qvoid
 
         public class Encryption
         {
-            private static byte[] StringToByteArray(string hex)
+            public static string ComputeSha256Hash(string rawData)
             {
-                return (from x in Enumerable.Range(0, hex.Length)
-                        where x % 2 == 0
-                        select Convert.ToByte(hex.Substring(x, 2), 16)).ToArray<byte>();
-            }
-
-            public static string StrXOR(string input, byte key, bool encrypt)
-            {
-                string output = string.Empty;
-                if (encrypt)
+                using (SHA256 sha256Hash = SHA256.Create())
                 {
-                    foreach (char c in input)
-                        output += (c ^ key).ToString("X2");
-                }
-                else
-                {
-                    try
-                    {
-                        byte[] strBytes = StringToByteArray(input);
-                        foreach (byte b in strBytes)
-                            output += (char)(b ^ key);
-                    }
-                    catch
-                    {
-                        return string.Empty;
-                    }
-                }
+                    byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(rawData));
+                    StringBuilder builder = new StringBuilder();
+                    for (int i = 0; i < bytes.Length; i++)
+                        builder.Append(bytes[i].ToString("x2"));
 
-                return output;
-            }
-
-            public static string StrXOR(string input, string key, bool encrypt)
-            {
-                if (key.Length == 0)
-                    return string.Empty;
-
-                string output = string.Empty;
-                if (encrypt)
-                {
-                    for (int i = 0; i < input.Length; ++i)
-                        output += (input[i] ^ key[i % key.Length]).ToString("X2");
+                    return builder.ToString();
                 }
-                else
-                {
-                    try
-                    {
-                        byte[] strBytes = StringToByteArray(input);
-                        for (int i = 0; i < strBytes.Length; ++i)
-                            output += (char)(strBytes[i] ^ key[i % key.Length]);
-                    }
-                    catch
-                    {
-                        return string.Empty;
-                    }
-                }
-
-                return output;
             }
         }
 
