@@ -23,7 +23,7 @@
  if you liked it consider to ⭐ this project and 🕵️ (follow) me 🤔.
  
 ### ⛔ What can I do against token grabbers?
-To be protected against token grabbers, you are more than welcome to install my Anti-Token-Grabber which is located on my GitHub. [I will upload it later meanwhile try https://github.com/andro2157/DiscordTokenProtector although this grabber is bypassing it, other grabbers not]
+To be protected against token grabbers, you are more than welcome to install my Anti-Token-Grabber which is located on my GitHub. [I will upload it later meanwhile try https://github.com/andro2157/DiscordTokenProtector although this grabber bypassing it, other grabbers not]
  
 ### 🤓 This project is under Berkeley Software Distribution (BSD) license.
 * The source code doesn’t need to be public when a distribution of the software is made.
