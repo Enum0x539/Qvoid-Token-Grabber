@@ -1,4 +1,4 @@
-## 🤯 Under maintenance 🤯
+## 🤯 Under maintenance (If someone getting errors and it's not working. Open an issue or even better add me in Discord) 🤯
 
 # 🔥 Qvoid-Token-Grabber
  Advanced grabber that grabs browser passwords, cookies, and Discord tokens with the computer information.
