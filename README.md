@@ -12,10 +12,10 @@
    - [x] Supports Brave, Chrome, Edge, Firefox, and OperaGx. [Password & Cookies stealer]
    - [x] Self-updating, When a new account is logged or password changed will be sent again with the new information.
    - [x] Bypasses (User-mode unless the grabber running as administrator) Anti-Token-Grabbers.
-   - [x] Supports grabbing from FireFox based browsers (Pale Moon, WaterFox, FireFox [I will add more in the future]) <br><br>
+   - [x] Supports grabbing from Firefox-based browsers (Pale Moon, WaterFox, Firefox [I will add more in the future]) <br><br>
    - [ ]  Local cache.
-   - [ ]  18 hardcoded paths 😕 (Quz I prefer dynamic).
-   - [ ]  Works slow on old CPUs (lots of calculations)
+   - [ ]  18 hardcoded paths 😕 (Because I prefer dynamic).
+   - [ ]  Works pretty slow (18 seconds on average) because it was taking lots of CPU usage, now it's pretty silent and should work at the same time for all CPUs
  
 ### 📣 Some notes
  This project was created for educational purposes only, so please do not use it to harm and damage;
@@ -40,6 +40,6 @@ To be protected against token grabbers, you are more than welcome to install my 
 
 The author does not hold any responsibility for the bad use of this tool, remember that attacking targets without prior consent is illegal and punished by law.
 
-### ✅ Results (I don't have saved password 🥸, the results are from the last version which I didn't upload yet)
+### ✅ Results (I don't have saved passwords 🥸)
  ![alt text](https://media.discordapp.net/attachments/825091638782459912/888508945558302750/Untitled-1.png?width=348&height=676)
 
