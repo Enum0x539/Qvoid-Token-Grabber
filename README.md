@@ -15,7 +15,7 @@
    - [x] Supports grabbing from Firefox-based browsers (Pale Moon, WaterFox, Firefox [I will add more in the future]) <br><br>
    - [ ]  Local cache.
    - [ ]  18 hardcoded paths 😕 (Because I prefer dynamic).
-   - [ ]  Works pretty slow (18 seconds on average) because it was taking lots of CPU usage, now it's pretty silent and should work at the same time for all CPUs
+   - [ ]  Works pretty slow (18 seconds on average) because it was taking lots of CPU usage, now it's pretty silent and should work at the same time for all CPUs.
  
 ### 📣 Some notes
  This project was created for educational purposes only, so please do not use it to harm and damage;
