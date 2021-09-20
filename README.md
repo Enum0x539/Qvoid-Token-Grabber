@@ -1,4 +1,5 @@
 ## 🤯 Under maintenance (If someone getting errors and it's not working. Open an issue or even better add me in Discord) 🤯
+## I will upload newer version in 22/09/2021 that should work for everyone.
 
 # 🔥 Qvoid-Token-Grabber
  Advanced grabber that grabs browser passwords, cookies, and Discord tokens with the computer information.
