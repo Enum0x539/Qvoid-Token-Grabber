@@ -1,4 +1,4 @@
-﻿using Discord.Backend;
+using Discord.Backend;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -414,37 +414,33 @@ namespace QvoidWrapper
             catch
             { }
 
-            if (Environment.Is64BitOperatingSystem)
-            {
-                using (var localKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64))
-                {
-                    var key = localKey.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion").GetValue("DigitalProductId");
-                    if (key != null)
-                        DecodeProductKey(key as byte[]);
-                }
-            }
-            else
-            {
-                using (var localKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32))
-                {
-                    var key = localKey.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion").GetValue("DigitalProductId");
-                    if (key != null)
-                        DecodeProductKey(key as byte[]);
-                }
-            }
+            WindowsLicense = GetProductKey();
         }
 
-        public static string DecodeProductKey(byte[] digitalProductId)
+        public static string GetProductKey()
+        {
+            var localKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32);
+
+            if (Environment.Is64BitOperatingSystem)
+                localKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
+
+            var registryKeyValue = localKey.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion").GetValue("DigitalProductId");
+            if (registryKeyValue == null)
+                return "Failed to get DigitalProductId from registry";
+            var digitalProductId = (byte[])registryKeyValue;
+
+            return DecodeProductKey(digitalProductId);
+        }
+
+        private static string DecodeProductKey(byte[] digitalProductId)
         {
             var key = String.Empty;
-
             const int keyOffset = 52;
-            const string insert = "N";
+            var isWin8 = (byte)((digitalProductId[66] / 6) & 1);
+            digitalProductId[66] = (byte)((digitalProductId[66] & 0xf7) | (isWin8 & 2) * 4);
+
             const string digits = "BCDFGHJKMPQRTVWXY2346789";
-
-            digitalProductId[66] = (byte)((digitalProductId[66] & 0xf7) | ((byte)((digitalProductId[66] / 6) & 1) & 2) * 4);
-
-            int last = 0;
+            var last = 0;
             for (var i = 24; i >= 0; i--)
             {
                 var current = 0;
@@ -456,17 +452,17 @@ namespace QvoidWrapper
                     current = current % 24;
                     last = current;
                 }
-
                 key = digits[current] + key;
             }
 
             var keypart1 = key.Substring(1, last);
-            key = key.Substring(1).Replace(keypart1, keypart1 + insert);
-            if (last == 0)
-                key = insert + key;
+            var keypart2 = key.Substring(last + 1, key.Length - (last + 1));
+            key = keypart1 + "N" + keypart2;
 
             for (var i = 5; i < key.Length; i += 6)
+            {
                 key = key.Insert(i, "-");
+            }
 
             return key;
         }
