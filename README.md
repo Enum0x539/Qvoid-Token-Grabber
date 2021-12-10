@@ -1,4 +1,4 @@
-# [🔥 Qvoid-Token-Grabber]([Qvoid Token Grabber](https://youtu.be/LYHPZXgqSPQ))
+# [🔥 Qvoid-Token-Grabber](https://youtu.be/LYHPZXgqSPQ)
  Advanced grabber that grabs browser passwords, cookies, and Discord tokens with the computer information.
 ### 🐵 Features
    - [x] Protection (AntiDebug, AntiEmulation, AntiWebSniffers, AntiVM, AntiSandboxie) which is controlled through the settings file.
