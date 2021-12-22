@@ -10,7 +10,7 @@ using System.Text;
 using Org.BouncyCastle.Crypto.Modes;
 using Org.BouncyCastle.Crypto.Engines;
 
-//Forked from some GitHub user which forked it too and added some functions, any way thx u saved me a lot <3.
+//https://github.com/bytixo/CockyGrabber thx u saved me a lot <3.
 
 namespace Qvoid_Token_Grabber.PasswordGrabbers
 {
