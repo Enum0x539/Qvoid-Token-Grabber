@@ -19,6 +19,7 @@
    - [ ]  Works pretty slow (18 seconds on average) because it was taking lots of CPU usage, now it's pretty silent and should work at the same time for all CPUs.
  
 ### 📣 Some notes
+[How to setup the grabber](https://youtu.be/LYHPZXgqSPQ)<br>
 **AFTER THE BUILD U _CAN_ DELETE EVERYTHING IN THE OUTPUT DIRECTORY EXCEPT THE EXE FILE!**<br>
  This project was created for educational purposes only, so please do not use it to harm and damage;
  This project was started because I wanted to learn about Discord's infrastructure and possible exploits, mean-while I made the base of this token-grabber (like a year ago) but, not long ago I continued this project and this is the final result, of course, I will update it and add more features in the future but mean-while remember to use your power for the good 😲.
