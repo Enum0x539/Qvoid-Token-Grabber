@@ -1290,7 +1290,7 @@ namespace QvoidWrapper
 
         public TelegramAPI(string Token, ulong ChatId)
         {
-            if (Token.Length == 46 && Token.Contains(":") && ChatId.ToString().Length == 9)
+            if (Token.Length == 46 && Token.Contains(":") && ChatId.ToString().Length >= 9)
             {
                 this.ChatId = ChatId;
                 this.Token = Token;
