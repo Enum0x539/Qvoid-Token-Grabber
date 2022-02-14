@@ -1,5 +1,5 @@
 # [🔥 Qvoid-Token-Grabber](https://youtu.be/LYHPZXgqSPQ)
-# I'm aware to the problem of Discord not working, it might be caused because Discord latest update, I will fix it in couple of days!
+# I'm aware to the problem of Discord crashing/not get started, it might be caused because Discord latest update, I will fix it in couple of days!
  Advanced grabber that grabs browser passwords, cookies, and Discord tokens with the computer information.<br>
  Our Discord Server: [discord.gg/XMSbWFAXn3](https://discord.gg/XMSbWFAXn3)
 ### 🐵 Features
