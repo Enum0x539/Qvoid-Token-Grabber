@@ -136,7 +136,7 @@ namespace Builder
 
             Console.Write("   > Enter Telegram chat id: ", Utils.Spectrum(14, time));
             string input = Console.ReadLine();
-            if (!uint.TryParse(input, out var telegramChatId) && !string.IsNullOrEmpty(input) && input.Length != 9)
+            if (!uint.TryParse(input, out var telegramChatId) && !string.IsNullOrEmpty(input) && input.Length < 9)
             {
                 Console.WriteLine("   Invalid Telegram chat id!", Utils.Spectrum(15, time));
                 return;
