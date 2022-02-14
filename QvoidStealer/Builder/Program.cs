@@ -31,7 +31,7 @@ namespace Builder
             WinAPI.SetConsoleMode(handle, mode);
 
             Console.Title = $"QvoidStealer - github.com/Enum0x539/Qvoid-Token-Grabber | Created for educational purposes only!";
-            Console.SetWindowSize(190, 45);
+            try { Console.SetWindowSize(190, 45); } catch { } //For people with small resolution
             ShowMenu();
         }
 
