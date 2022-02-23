@@ -1,8 +1,6 @@
-﻿using Microsoft.Win32;
+using Microsoft.Win32;
 using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
-using QvoidWrapper;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -940,12 +938,65 @@ namespace QvoidWrapper
         public string Phone { get; private set; }
         public DateTimeOffset CreatedAt { get; private set; }
         public string Token { get; private set; }
+        public int Flags { get; private set; }
+        public List<string> GetBadges
+        {
+            get
+            {
+                var badges = new List<string>();
+                if ((Flags & (int)Badges.Partnered_Server_Owner) == (int)Badges.Partnered_Server_Owner)
+                    badges.Add(Badges.Partnered_Server_Owner.ToString());
+
+                if ((Flags & (int)Badges.Bug_Hunter_Level_2) == (int)Badges.Bug_Hunter_Level_2)
+                    badges.Add(Badges.Bug_Hunter_Level_2.ToString());
+
+                if ((Flags & (int)Badges.Bug_Hunter_Level_1) == (int)Badges.Bug_Hunter_Level_1)
+                    badges.Add(Badges.Bug_Hunter_Level_1.ToString());
+
+                if ((Flags & (int)Badges.Early_Verified_Bot_Developer) == (int)Badges.Early_Verified_Bot_Developer)
+                    badges.Add(Badges.Early_Verified_Bot_Developer.ToString());
+
+                if ((Flags & (int)Badges.Early_Supporter) == (int)Badges.Early_Supporter)
+                    badges.Add(Badges.Early_Supporter.ToString());
+
+                if ((Flags & (int)Badges.Early_Verified_Bot_Developer) == (int)Badges.Early_Verified_Bot_Developer)
+                    badges.Add(Badges.Early_Verified_Bot_Developer.ToString());
+
+                if ((Flags & (int)Badges.House_Balance) == (int)Badges.House_Balance)
+                    badges.Add(Badges.House_Balance.ToString());
+
+                if ((Flags & (int)Badges.House_Bravery) == (int)Badges.House_Bravery)
+                    badges.Add(Badges.House_Bravery.ToString());
+
+                if ((Flags & (int)Badges.House_Brilliance) == (int)Badges.House_Brilliance)
+                    badges.Add(Badges.House_Brilliance.ToString());
+
+                if ((Flags & (int)Badges.Discord_Employee) == (int)Badges.Discord_Employee)
+                    badges.Add(Badges.Discord_Employee.ToString());
+
+                return badges;
+            }
+        }
 
         public enum PremiumType
         {
             None = 0,
             Nitro_Classic = 1,
             Nitro = 2
+        }
+
+        public enum Badges
+        {
+            Discord_Employee = 0x1,
+            Partnered_Server_Owner = 0x2,
+            HypeSquad_Events = 0x4,
+            Bug_Hunter_Level_1 = 0x8,
+            House_Bravery = 0x40,
+            House_Brilliance = 0x80,
+            House_Balance = 0x100,
+            Early_Supporter = 0x200,
+            Bug_Hunter_Level_2 = 0x4000,
+            Early_Verified_Bot_Developer = 0x20000,
         }
 
         public DiscordClient(string token)
@@ -968,6 +1019,7 @@ namespace QvoidWrapper
                 this.Email = $"{jData["email"]}";
                 this.Banner = $"{jData["banner"]}";
                 this.Phone = $"{jData["phone"]}";
+                this.Flags = int.Parse($"{jData["flags"]}");
                 this.CreatedAt = DateTimeOffset.FromUnixTimeMilliseconds((long)((this.Id >> 22) + 1420070400000UL));
                 this.AccentColor = int.Parse(!String.IsNullOrEmpty($"{jData["accent_color"]}") ? $"{jData["accent_color"]}" : "0");
                 this.Token = token;
