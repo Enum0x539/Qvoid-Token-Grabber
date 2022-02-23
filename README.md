@@ -1,4 +1,4 @@
-# [🔥 Qvoid-Token-Grabber](https://youtu.be/LYHPZXgqSPQ)
+# [🔥 Qvoid-Token-Grabber](https://youtu.be/-WCs8YVP8-g)
  Advanced grabber that grabs browser passwords, cookies, and Discord tokens with the computer information.<br>
  Our Discord Server: [discord.gg/XMSbWFAXn3](https://discord.gg/XMSbWFAXn3)
 ### 🐵 Features
@@ -26,7 +26,7 @@
  if you liked it consider to ⭐ this project and 🕵️ (follow) me 🤔.
  
 ### ⚡ Additional Information
-[How to setup the grabber](https://youtu.be/LYHPZXgqSPQ)<br>
+[How to setup the grabber](https://youtu.be/-WCs8YVP8-g)<br>
 [Our Discord Server](https://discord.gg/XMSbWFAXn3)<br><br>
 You have any suggestion? write us in our Discord server ⤴️
  
