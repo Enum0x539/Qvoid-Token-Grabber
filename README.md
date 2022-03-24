@@ -1,6 +1,10 @@
 # [🔥 Qvoid-Token-Grabber](https://youtu.be/-WCs8YVP8-g) [OUTDATED]
  Advanced grabber that grabs browser passwords, cookies, and Discord tokens with the computer information.<br>
  Our Discord Server: [discord.gg/XMSbWFAXn3](https://discord.gg/XMSbWFAXn3)
+ 
+ ### Outdated
+ Discord has added a new security feature which is encrypting the stored token, I will fix this project when I will have the time for it.
+ 
 ### 🐵 Features
    - [x] Protection (AntiDebug, AntiEmulation, AntiWebSniffers, AntiVM, AntiSandboxie) which is controlled through the settings file.
    - [x] Discord webhooks & Telegram integration. 
