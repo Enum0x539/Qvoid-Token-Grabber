@@ -53,5 +53,5 @@ To be protected against token grabbers, you are more than welcome to install my 
 
 The author does not hold any responsibility for the bad use of this tool, remember that attacking targets without prior consent is illegal and punished by law.
 
-### ✅ Results (I don't save passwords on my PC)
+### ✅ Results (I don't save passwords on my PC) it's old picture, watch the videos on youtube to see the newer results.
  ![alt text](https://media.discordapp.net/attachments/825091638782459912/888508945558302750/Untitled-1.png?width=348&height=676)
