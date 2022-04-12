@@ -5,6 +5,7 @@
  ### Latest update
  Discord has added a new security feature which is encrypting the stored token, I will fix this project when I will have the time for it. (DONE)
  Removed telegram support.
+ Right now the builder is not updated so use the source instead.
  
 ### 🐵 Features
    - [x] Protection (AntiDebug, AntiEmulation, AntiWebSniffers, AntiVM, AntiSandboxie) which is controlled through the settings file.
