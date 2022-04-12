@@ -1,4 +1,4 @@
-# [🔥 Qvoid-Token-Grabber](https://youtu.be/-WCs8YVP8-g) [OUTDATED - HQ UPDATE SOON]
+# [🔥 Qvoid-Token-Grabber](https://youtu.be/-WCs8YVP8-g) [THERE IS NO SUPPORT FOR TELEGRAM ANYMORE]
  Advanced grabber that grabs browser passwords, cookies, and Discord tokens with the computer information.<br>
  Our Discord Server: [discord.gg/4aSQ28hKrb](https://discord.gg/4aSQ28hKrb)
  
