@@ -134,7 +134,7 @@ namespace Builder
                 return;
             }
 
-            Console.Write("   > [TELEGRAM IS NOT SUPPORTED FOR THIS VERSION]", Utils.Spectrum(14, time));
+            Console.Write("   > [TELEGRAM IS NOT SUPPORTED FOR THIS VERSION]\r\n", Utils.Spectrum(14, time));
             string input = "";
 
             //Console.Write("   > Enter Telegram chat id: ", Utils.Spectrum(14, time));
