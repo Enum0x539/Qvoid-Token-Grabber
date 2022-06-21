@@ -9,6 +9,8 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 
+//I didn't write this implementation, if you are the owner of this code contact me for a credit.
+
 namespace QvoidStealer.Miscellaneous.Stealers.Browsers
 {
     internal sealed class Json
