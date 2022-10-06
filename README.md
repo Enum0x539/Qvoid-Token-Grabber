@@ -2,6 +2,8 @@
  Advanced grabber that grabs browser passwords, cookies, and Discord tokens with the computer information.<br>
  Our Discord Server: [discord.gg/2rnC9f69x5](https://discord.gg/2rnC9f69x5)
 
+# I will no longer update this project, I will check and approve pull requests.
+
 ### 🐵 Features
    - [x] Protection (AntiDebug, AntiEmulation, AntiWebSniffers, AntiVM, AntiSandboxie) is controlled through the settings file.
    - [x] Discord webhooks integration. 
